@@ -1,12 +1,33 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Alert, FlatList } from "react-native";
+import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+import AddTask from "./components/AddTask";
+import Task from "./components/Task";
 
 export default function App() {
+  const [tasks, setTasks] = useState([]);
+
+  const addTask = (task) => {
+    {
+      task
+        ? setTasks((prevTasks) => {
+            return [...prevTasks, { id: uuidv4(), task: task }];
+          })
+        : Alert.alert("Oops!", "There is no task to add", { text: "Ok" });
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text>To Do or Not To Do</Text>
-      <View style={styles.border}>
-        <Text>Open up App.js to start working on your app!</Text>
+      <View style={styles.tasksData}>
+        <AddTask addTask={addTask} />
+        <FlatList
+          data={tasks}
+          renderItem={({ item }) => <Task task={item} />}
+          keyExtractor={(item) => item.id}
+        />
       </View>
       <StatusBar style="auto" />
     </View>
@@ -15,16 +36,16 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 50,
+    marginTop: 150,
     flex: 1,
     justifyContent: "flex-start",
     alignItems: "center",
   },
-  border: {
-    // justifyContent: "center",
-    // alignItems: "flex-start",
+  tasksData: {
     borderStyle: "solid",
     borderWidth: 1,
     borderColor: "#000",
+    padding: 5,
+    width: 300,
   },
 });
