@@ -1,6 +1,7 @@
 import { useState, useContext } from "react";
 import { View, Text, TextInput, Button } from "react-native";
 import { TasksContext } from "../Helper/Context";
+import Reminder from "./Reminder";
 
 const EditTaskScreen = ({
   navigation,
@@ -8,14 +9,19 @@ const EditTaskScreen = ({
   route,
   editTask,
 }) => {
-  const [text, setText] = useState("");
   const { tasks, setTasks } = useContext(TasksContext);
+  const [text, setText] = useState("");
   return (
     <View>
       <Text>Task: {route.params.task}</Text>
+      {route.params.reminder ? (
+        <Text>Reminder: True</Text>
+      ) : (
+        <Text>Reminder: False</Text>
+      )}
+      <Reminder />
       <Text>ID: {route.params.id}</Text>
       <TextInput
-        // placeholder="update task..."
         value={text}
         placeholder={route.params.task}
         onChangeText={(value) => setText(value)}
