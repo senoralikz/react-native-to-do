@@ -3,6 +3,7 @@ import { View, Text, Switch, StyleSheet } from "react-native";
 const Reminder = ({ isReminderEnabled, toggleSwitch }) => {
   return (
     <View style={styles.container}>
+      <Text>Reminder: </Text>
       <Switch
         ios_backgroundColor="#3e3e3e"
         onValueChange={toggleSwitch}

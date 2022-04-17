@@ -1,8 +1,8 @@
 import { StyleSheet, View, Text, FlatList } from "react-native";
 import { useContext } from "react";
+import { TasksContext } from "../Helper/Context";
 import AddTask from "./AddTask";
 import Task from "./Task";
-import { TasksContext } from "../Helper/Context";
 
 const HomeScreen = ({ navigation }) => {
   // const [tasks, setTasks] = useState([]);
@@ -36,16 +36,19 @@ const HomeScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 100,
-    height: 400,
-    alignItems: "center",
+    marginTop: 50,
+    height: 500,
+    // borderBottomColor: "#000",
+    // borderBottomWidth: 1,
+    // borderStyle: "solid",
+    // alignItems: "center",
   },
   tasksData: {
-    borderStyle: "solid",
-    borderWidth: 1,
-    borderColor: "#000",
+    // borderStyle: "solid",
+    // borderWidth: 1,
+    // borderColor: "#000",
     padding: 5,
-    width: 300,
+    // width: 300,
   },
   tasksList: {
     marginTop: 10,

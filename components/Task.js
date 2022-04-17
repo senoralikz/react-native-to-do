@@ -17,7 +17,11 @@ const Task = ({ task, navigation }) => {
     <View style={task.reminder ? styles.withReminder : styles.container}>
       <View style={styles.taskItem}>
         <View style={styles.taskWidth}>
-          <Text style={styles.listTask}>{task.task}</Text>
+          <Text>{task.task}</Text>
+          <View style={styles.dueDate}>
+            <Text>Due Date: </Text>
+            <Text>{task.dueDate}</Text>
+          </View>
         </View>
         <View style={styles.taskButtons}>
           <Button
@@ -27,6 +31,7 @@ const Task = ({ task, navigation }) => {
                 task: task.task,
                 id: task.id,
                 reminder: task.reminder,
+                dueDate: task.dueDate,
               })
             }
           />
@@ -55,14 +60,15 @@ const styles = StyleSheet.create({
   taskWidth: {
     width: 175,
   },
-  listTask: {
-    margin: 10,
-  },
   taskItem: {
     flexDirection: "row",
     justifyContent: "space-between",
+    margin: 10,
   },
   taskButtons: {
+    flexDirection: "row",
+  },
+  dueDate: {
     flexDirection: "row",
   },
 });
