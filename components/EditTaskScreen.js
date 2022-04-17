@@ -1,49 +1,88 @@
 import { useState, useContext } from "react";
-import { View, Text, TextInput, Button } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  Alert,
+  StyleSheet,
+  Switch,
+} from "react-native";
 import { TasksContext } from "../Helper/Context";
 import Reminder from "./Reminder";
 
-const EditTaskScreen = ({
-  navigation,
-  navigation: { goBack },
-  route,
-  editTask,
-}) => {
+const EditTaskScreen = ({ navigation: { goBack }, route }) => {
   const { tasks, setTasks } = useContext(TasksContext);
-  const [text, setText] = useState("");
+  const [text, setText] = useState(route.params.task);
+  const [isEnabled, setIsEnabled] = useState(route.params.reminder);
+
+  // const toggleSwitch = () => setReminder((previousState) => !previousState);
+  const updateReminder = () => setIsEnabled((previousState) => !previousState);
+
+  // Alert.alert("Oops!", "You can't leave the task field empty", {
+  //   text: "Ok",
+  // });
+
+  const updateTask = () => {
+    setTasks(
+      tasks.map((task) => {
+        if (task.id === route.params.id) {
+          if (text) {
+            task.task = text;
+            task.reminder = isEnabled;
+            setText("");
+            goBack();
+            return task;
+          } else {
+            Alert.alert("Oops!", "You can't leave the task field empty", {
+              text: "Ok",
+            });
+          }
+        }
+        return task;
+      })
+    );
+  };
+
   return (
     <View>
-      <Text>Task: {route.params.task}</Text>
-      {route.params.reminder ? (
-        <Text>Reminder: True</Text>
-      ) : (
-        <Text>Reminder: False</Text>
-      )}
-      <Reminder />
+      <View style={styles.taskHeader}>
+        <Text>Task: </Text>
+        <TextInput
+          value={text}
+          placeholder={route.params.task}
+          onChangeText={(value) => setText(value)}
+          style={styles.taskInput}
+        />
+      </View>
+      {isEnabled ? <Text>Reminder: On</Text> : <Text>Reminder: Off</Text>}
+      <Reminder isReminderEnabled={isEnabled} toggleSwitch={updateReminder} />
+      {/* <Switch
+        ios_backgroundColor="#3e3e3e"
+        onValueChange={updateReminder}
+        value={isEnabled}
+      /> */}
       <Text>ID: {route.params.id}</Text>
-      <TextInput
+      {/* <TextInput
         value={text}
         placeholder={route.params.task}
         onChangeText={(value) => setText(value)}
-      />
-      <Button
-        title="Save Changes"
-        onPress={() => {
-          setTasks(
-            tasks.map((task) => {
-              if (task.id === route.params.id) {
-                task.task = text;
-                goBack();
-                return task;
-              }
-              return task;
-            })
-          );
-          setText("");
-        }}
-      />
+      /> */}
+      <Button title="Save Changes" onPress={updateTask} />
     </View>
   );
 };
 
 export default EditTaskScreen;
+
+const styles = StyleSheet.create({
+  taskHeader: {
+    flexDirection: "row",
+  },
+  taskInput: {
+    width: 150,
+    borderBottomColor: "#000",
+    borderBottomWidth: 1,
+    borderStyle: "solid",
+  },
+});

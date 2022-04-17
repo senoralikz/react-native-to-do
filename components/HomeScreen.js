@@ -8,28 +8,10 @@ const HomeScreen = ({ navigation }) => {
   // const [tasks, setTasks] = useState([]);
   const { tasks, setTasks } = useContext(TasksContext);
 
-  // const addTask = (task) => {
-  // {
-  //   task
-  //     ? setTasks((prevTasks) => {
-  //         return [...prevTasks, { id: uuidv4(), task: task }];
-  //       })
-  //     : Alert.alert("Oops!", "There is no task to add", { text: "Ok" });
-  // }
-  // };
-
-  const editTask = (id) => {
-    setTasks(
-      tasks.map((task) => {
-        task.id !== id ? task : console.log(task);
-      })
-    );
-  };
-
-  // const deleteTask = (id) => {
+  // const editTask = (id) => {
   //   setTasks(
-  //     tasks.filter((task) => {
-  //       return task.id !== id;
+  //     tasks.map((task) => {
+  //       task.id !== id ? task : console.log(task);
   //     })
   //   );
   // };
@@ -41,7 +23,7 @@ const HomeScreen = ({ navigation }) => {
         <FlatList
           data={tasks}
           renderItem={({ item }) => (
-            <Task task={item} editTask={editTask} navigation={navigation} />
+            <Task task={item} navigation={navigation} />
           )}
           keyExtractor={(item) => item.id}
           ListEmptyComponent={<Text style={styles.noTasks}>Nothing to do</Text>}
@@ -55,6 +37,7 @@ const HomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     marginTop: 100,
+    height: 400,
     alignItems: "center",
   },
   tasksData: {

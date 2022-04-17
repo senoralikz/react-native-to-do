@@ -1,16 +1,40 @@
-import { View, Text, TextInput, StyleSheet, Button, Alert } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Button,
+  Alert,
+  Switch,
+} from "react-native";
 import React, { useState, useContext } from "react";
 import { TasksContext } from "../Helper/Context";
 import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
 import Reminder from "./Reminder";
 
-const AddTask = ({ addTask }) => {
+const AddTask = () => {
   const [text, setText] = useState("");
   const { tasks, setTasks } = useContext(TasksContext);
-  const [isEnabled, setIsEnabled] = useState(false);
+  const [isReminderEnabled, setIsReminderEnabled] = useState(false);
 
-  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
+  const toggleSwitch = () =>
+    setIsReminderEnabled((previousState) => !previousState);
+
+  const addTask = () => {
+    if (text) {
+      setTasks((prevTasks) => {
+        return [
+          ...prevTasks,
+          { id: uuidv4(), task: text, reminder: isReminderEnabled },
+        ];
+      });
+      console.log(tasks);
+      setText("");
+    } else {
+      Alert.alert("Oops!", "There is no task to add", { text: "Ok" });
+    }
+  };
 
   return (
     <View>
@@ -23,24 +47,16 @@ const AddTask = ({ addTask }) => {
           onChangeText={(value) => setText(value)}
         />
       </View>
-      <Reminder isEnabled={isEnabled} toggleSwitch={toggleSwitch} />
-      <Button
-        title="Add"
-        onPress={() => {
-          if (text) {
-            setTasks((prevTasks) => {
-              return [
-                ...prevTasks,
-                { id: uuidv4(), task: text, reminder: isEnabled },
-              ];
-            });
-            console.log(tasks);
-            setText("");
-          } else {
-            Alert.alert("Oops!", "There is no task to add", { text: "Ok" });
-          }
-        }}
+      <Reminder
+        isReminderEnabled={isReminderEnabled}
+        toggleSwitch={toggleSwitch}
       />
+      {/* <Switch
+        ios_backgroundColor="#3e3e3e"
+        onValueChange={toggleSwitch}
+        value={isReminderEnabled}
+      /> */}
+      <Button title="Add" onPress={addTask} />
     </View>
   );
 };

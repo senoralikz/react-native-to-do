@@ -5,6 +5,14 @@ import { TasksContext } from "../Helper/Context";
 const Task = ({ task, navigation }) => {
   const { tasks, setTasks } = useContext(TasksContext);
 
+  const deleteTask = (id) => {
+    setTasks(
+      tasks.filter((task) => {
+        return task.id !== id;
+      })
+    );
+  };
+
   return (
     <View style={task.reminder ? styles.withReminder : styles.container}>
       <View style={styles.taskItem}>
@@ -22,16 +30,7 @@ const Task = ({ task, navigation }) => {
               })
             }
           />
-          <Button
-            title="Delete"
-            onPress={() =>
-              setTasks(
-                tasks.filter((item) => {
-                  return item.id !== task.id;
-                })
-              )
-            }
-          />
+          <Button title="Delete" onPress={() => deleteTask(task.id)} />
         </View>
       </View>
     </View>
@@ -43,6 +42,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#000",
     borderStyle: "solid",
+    margin: 1,
   },
   withReminder: {
     borderWidth: 1,
@@ -50,6 +50,7 @@ const styles = StyleSheet.create({
     borderLeftColor: "#2ecc71",
     borderLeftWidth: 5,
     borderStyle: "solid",
+    margin: 1,
   },
   taskWidth: {
     width: 175,

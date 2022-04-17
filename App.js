@@ -1,10 +1,10 @@
-import { useState, createContext } from "react";
-import { StyleSheet } from "react-native";
+import { useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "./components/HomeScreen";
 import EditTaskScreen from "./components/EditTaskScreen";
 import { TasksContext } from "./Helper/Context";
+import { StatusBar } from "expo-status-bar";
 
 const Stack = createNativeStackNavigator();
 
@@ -27,6 +27,7 @@ export default function App() {
           />
         </Stack.Navigator>
       </NavigationContainer>
+      <StatusBar style="auto" />
     </TasksContext.Provider>
   );
 }
