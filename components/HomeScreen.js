@@ -1,4 +1,11 @@
-import { StyleSheet, View, Text, FlatList } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Text,
+  FlatList,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from "react-native";
 import { useContext } from "react";
 import { TasksContext } from "../Helper/Context";
 import AddTask from "./AddTask";
@@ -17,20 +24,24 @@ const HomeScreen = ({ navigation }) => {
   // };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.tasksData}>
-        <AddTask />
-        <FlatList
-          data={tasks}
-          renderItem={({ item }) => (
-            <Task task={item} navigation={navigation} />
-          )}
-          keyExtractor={(item) => item.id}
-          ListEmptyComponent={<Text style={styles.noTasks}>Nothing to do</Text>}
-          style={styles.tasksList}
-        />
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <View style={styles.container}>
+        <View style={styles.tasksData}>
+          <AddTask />
+          <FlatList
+            data={tasks}
+            renderItem={({ item }) => (
+              <Task task={item} navigation={navigation} />
+            )}
+            keyExtractor={(item) => item.id}
+            ListEmptyComponent={
+              <Text style={styles.noTasks}>Nothing to do</Text>
+            }
+            style={styles.tasksList}
+          />
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 

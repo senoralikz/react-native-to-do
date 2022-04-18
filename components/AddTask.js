@@ -21,7 +21,7 @@ const AddTask = () => {
   const [showDueDate, setShowDueDate] = useState(false);
   const [date, setDate] = useState(new Date());
 
-  let dueDate = "--/--/--";
+  let dueDate = new Date(0).toLocaleDateString();
 
   if (showDueDate) {
     dueDate = date.toLocaleDateString();
@@ -47,7 +47,8 @@ const AddTask = () => {
       });
       console.log(tasks);
       setText("");
-      setIsReminderEnabled(false);
+      // setShowDueDate(false);
+      // setIsReminderEnabled(false);
     } else {
       Alert.alert("Oops!", "There is no task to add", { text: "Ok" });
     }
@@ -77,7 +78,6 @@ const AddTask = () => {
 
   return (
     <View>
-      <Text style={styles.addTaskText}>Add a Task</Text>
       <TextInput
         style={styles.textInput}
         placeholder="Add Task..."
@@ -102,9 +102,6 @@ const AddTask = () => {
 };
 
 const styles = StyleSheet.create({
-  addTaskText: {
-    textAlign: "center",
-  },
   textInput: {
     // width: 288,
     padding: 5,

@@ -6,6 +6,8 @@ import {
   Button,
   Alert,
   StyleSheet,
+  TouchableWithoutFeedback,
+  Keyboard,
   Switch,
 } from "react-native";
 import { TasksContext } from "../Helper/Context";
@@ -17,18 +19,28 @@ const EditTaskScreen = ({ navigation: { goBack }, route }) => {
   const [text, setText] = useState(route.params.task);
   const [isEnabled, setIsEnabled] = useState(route.params.reminder);
   const [updateDate, setUpdateDate] = useState(new Date(route.params.dueDate));
-  const [updateDateToggle, setUpdateDateToggle] = useState(false);
+  const [updateDateToggle, setUpdateDateToggle] = useState(() =>
+    route.params.dueDate !== new Date(0).toLocaleDateString() ? true : false
+  );
+
+  // setUpdateDateToggle(() => {
+  //   updateDate.toLocaleDateString() !== new Date(0).toLocaleDateString()
+  //     ? true
+  //     : false;
+  // });
 
   const onUpdateDateChange = (event, selectedDate) => {
     const currentDate = selectedDate;
     setUpdateDate(currentDate);
   };
 
-  const updateReminderToggle = () =>
+  const updateReminderToggle = () => {
     setIsEnabled((previousState) => !previousState);
+  };
 
-  const updateDueDateToggle = () =>
+  const updateDueDateToggle = () => {
     setUpdateDateToggle((previousState) => !previousState);
+  };
 
   const updateTask = () => {
     setTasks(
@@ -40,7 +52,7 @@ const EditTaskScreen = ({ navigation: { goBack }, route }) => {
             {
               updateDateToggle
                 ? (task.dueDate = updateDate.toLocaleDateString())
-                : (task.dueDate = "--/--/--");
+                : (task.dueDate = new Date(0).toLocaleDateString());
             }
             setText("");
             goBack();
@@ -57,31 +69,35 @@ const EditTaskScreen = ({ navigation: { goBack }, route }) => {
   };
 
   return (
-    <View>
-      <View style={styles.taskHeader}>
-        <Text>Task: </Text>
-        <TextInput
-          value={text}
-          placeholder={route.params.task}
-          onChangeText={(value) => setText(value)}
-          style={styles.taskInput}
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <View>
+        <View style={styles.taskHeader}>
+          <Text>Task: </Text>
+          <TextInput
+            value={text}
+            placeholder={route.params.task}
+            onChangeText={(value) => setText(value)}
+            style={styles.taskInput}
+          />
+        </View>
+        <DueDate
+          date={updateDate}
+          showDueDate={updateDateToggle}
+          toggleDateSwitch={updateDueDateToggle}
+          onChange={onUpdateDateChange}
         />
-      </View>
-      <DueDate
-        date={updateDate}
-        showDueDate={updateDateToggle}
-        toggleDateSwitch={updateDueDateToggle}
-        onChange={onUpdateDateChange}
-      />
-      <Text>Current Due Date: {route.params.dueDate}</Text>
-      <Reminder
-        isReminderEnabled={isEnabled}
-        toggleSwitch={updateReminderToggle}
-      />
+        {route.params.dueDate !== new Date(0).toLocaleDateString() && (
+          <Text>Current Due Date: {route.params.dueDate}</Text>
+        )}
+        <Reminder
+          isReminderEnabled={isEnabled}
+          toggleSwitch={updateReminderToggle}
+        />
 
-      <Text>ID: {route.params.id}</Text>
-      <Button title="Save Changes" onPress={updateTask} />
-    </View>
+        <Text>ID: {route.params.id}</Text>
+        <Button title="Save Changes" onPress={updateTask} />
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 

@@ -18,10 +18,12 @@ const Task = ({ task, navigation }) => {
       <View style={styles.taskItem}>
         <View style={styles.taskWidth}>
           <Text>{task.task}</Text>
-          <View style={styles.dueDate}>
-            <Text>Due Date: </Text>
-            <Text>{task.dueDate}</Text>
-          </View>
+          {task.dueDate !== new Date(0).toLocaleDateString() && (
+            <View style={styles.dueDate}>
+              <Text>Due Date: </Text>
+              <Text>{task.dueDate}</Text>
+            </View>
+          )}
         </View>
         <View style={styles.taskButtons}>
           <Button
