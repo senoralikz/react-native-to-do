@@ -21,6 +21,12 @@ const AddTask = () => {
   const [showDueDate, setShowDueDate] = useState(false);
   const [date, setDate] = useState(new Date());
 
+  let dueDate = "--/--/--";
+
+  if (showDueDate) {
+    dueDate = date.toLocaleDateString();
+  }
+
   const addTask = () => {
     if (text) {
       setTasks((prevTasks) => {
@@ -29,13 +35,19 @@ const AddTask = () => {
           {
             id: uuidv4(),
             task: text,
-            dueDate: date.toLocaleDateString(),
+            dueDate: dueDate,
+            // if(showDueDate) {
+            //   dueDate: date.toLocaleDateString()
+            // } else {
+            //   dueDate: '--/--/--'
+            // },
             reminder: isReminderEnabled,
           },
         ];
       });
       console.log(tasks);
       setText("");
+      setIsReminderEnabled(false);
     } else {
       Alert.alert("Oops!", "There is no task to add", { text: "Ok" });
     }
@@ -84,11 +96,6 @@ const AddTask = () => {
           toggleSwitch={toggleReminderSwitch}
         />
       </View>
-      {/* <Switch
-        ios_backgroundColor="#3e3e3e"
-        onValueChange={toggleSwitch}
-        value={isReminderEnabled}
-      /> */}
       <Button title="Add" onPress={addTask} />
     </View>
   );

@@ -19,11 +19,8 @@ const EditTaskScreen = ({ navigation: { goBack }, route }) => {
   const [updateDate, setUpdateDate] = useState(new Date(route.params.dueDate));
   const [updateDateToggle, setUpdateDateToggle] = useState(false);
 
-  // const toggleSwitch = () => setReminder((previousState) => !previousState);
-
   const onUpdateDateChange = (event, selectedDate) => {
     const currentDate = selectedDate;
-    // setShow(false);
     setUpdateDate(currentDate);
   };
 
@@ -33,10 +30,6 @@ const EditTaskScreen = ({ navigation: { goBack }, route }) => {
   const updateDueDateToggle = () =>
     setUpdateDateToggle((previousState) => !previousState);
 
-  // Alert.alert("Oops!", "You can't leave the task field empty", {
-  //   text: "Ok",
-  // });
-
   const updateTask = () => {
     setTasks(
       tasks.map((task) => {
@@ -44,7 +37,11 @@ const EditTaskScreen = ({ navigation: { goBack }, route }) => {
           if (text) {
             task.task = text;
             task.reminder = isEnabled;
-            task.dueDate = updateDate.toLocaleDateString();
+            {
+              updateDateToggle
+                ? (task.dueDate = updateDate.toLocaleDateString())
+                : (task.dueDate = "--/--/--");
+            }
             setText("");
             goBack();
             return task;
@@ -70,30 +67,19 @@ const EditTaskScreen = ({ navigation: { goBack }, route }) => {
           style={styles.taskInput}
         />
       </View>
-      {/* {isEnabled ? <Text>Reminder: On</Text> : <Text>Reminder: Off</Text>} */}
       <DueDate
         date={updateDate}
         showDueDate={updateDateToggle}
         toggleDateSwitch={updateDueDateToggle}
         onChange={onUpdateDateChange}
       />
-      <Text>Due By: {updateDate.toLocaleDateString()}</Text>
+      <Text>Current Due Date: {route.params.dueDate}</Text>
       <Reminder
         isReminderEnabled={isEnabled}
         toggleSwitch={updateReminderToggle}
       />
-      {/* <Switch
-        ios_backgroundColor="#3e3e3e"
-        onValueChange={updateReminder}
-        value={isEnabled}
-      /> */}
 
       <Text>ID: {route.params.id}</Text>
-      {/* <TextInput
-        value={text}
-        placeholder={route.params.task}
-        onChangeText={(value) => setText(value)}
-      /> */}
       <Button title="Save Changes" onPress={updateTask} />
     </View>
   );
