@@ -6,6 +6,7 @@ import {
   Button,
   Alert,
   Switch,
+  TouchableOpacity,
 } from "react-native";
 import React, { useState, useContext } from "react";
 import { TasksContext } from "../Helper/Context";
@@ -36,19 +37,12 @@ const AddTask = () => {
             id: uuidv4(),
             task: text,
             dueDate: dueDate,
-            // if(showDueDate) {
-            //   dueDate: date.toLocaleDateString()
-            // } else {
-            //   dueDate: '--/--/--'
-            // },
             reminder: isReminderEnabled,
+            completed: false,
           },
         ];
       });
-      console.log(tasks);
       setText("");
-      // setShowDueDate(false);
-      // setIsReminderEnabled(false);
     } else {
       Alert.alert("Oops!", "There is no task to add", { text: "Ok" });
     }
@@ -56,19 +50,13 @@ const AddTask = () => {
 
   const toggleDateSwitch = () => {
     setShowDueDate((previousState) => !previousState);
-    if (showDueDate === false) {
-      // setDate(0);
-      // console.log(date);
-      console.log("there is no due date");
-    } else {
-      setDate(new Date());
-      console.log(date);
+    {
+      showDueDate && setDate(new Date());
     }
   };
 
   const onDateChange = (event, selectedDate) => {
     const currentDate = selectedDate;
-    // setShow(false);
     setDate(currentDate);
   };
 

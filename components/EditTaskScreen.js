@@ -86,15 +86,22 @@ const EditTaskScreen = ({ navigation: { goBack }, route }) => {
           toggleDateSwitch={updateDueDateToggle}
           onChange={onUpdateDateChange}
         />
-        {route.params.dueDate !== new Date(0).toLocaleDateString() && (
-          <Text>Current Due Date: {route.params.dueDate}</Text>
-        )}
+        <Text>
+          Current Due Date:{" "}
+          {route.params.dueDate !== new Date(0).toLocaleDateString()
+            ? route.params.dueDate
+            : "No Due Date"}
+        </Text>
         <Reminder
           isReminderEnabled={isEnabled}
           toggleSwitch={updateReminderToggle}
         />
 
-        <Text>ID: {route.params.id}</Text>
+        {route.params.completed ? (
+          <Text>Completed: Yes</Text>
+        ) : (
+          <Text>Completed: No</Text>
+        )}
         <Button title="Save Changes" onPress={updateTask} />
       </View>
     </TouchableWithoutFeedback>
