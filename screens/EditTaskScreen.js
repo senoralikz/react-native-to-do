@@ -6,13 +6,13 @@ import {
   Button,
   Alert,
   StyleSheet,
-  TouchableWithoutFeedback,
+  Pressable,
   Keyboard,
   Switch,
 } from "react-native";
 import { TasksContext } from "../Helper/Context";
-import DueDate from "./DueDate";
-import Reminder from "./Reminder";
+import DueDate from "../components/DueDate";
+import Reminder from "../components/Reminder";
 
 const EditTaskScreen = ({ navigation: { goBack }, route }) => {
   const { tasks, setTasks } = useContext(TasksContext);
@@ -69,8 +69,8 @@ const EditTaskScreen = ({ navigation: { goBack }, route }) => {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <View>
+    <Pressable onPress={() => Keyboard.dismiss()}>
+      <View style={styles.container}>
         <View style={styles.taskHeader}>
           <Text>Task: </Text>
           <TextInput
@@ -104,13 +104,17 @@ const EditTaskScreen = ({ navigation: { goBack }, route }) => {
         )}
         <Button title="Save Changes" onPress={updateTask} />
       </View>
-    </TouchableWithoutFeedback>
+    </Pressable>
   );
 };
 
 export default EditTaskScreen;
 
 const styles = StyleSheet.create({
+  container: {
+    height: "100%",
+    backgroundColor: "#fff",
+  },
   taskHeader: {
     flexDirection: "row",
   },

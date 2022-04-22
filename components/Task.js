@@ -7,15 +7,15 @@ import {
   Pressable,
   TouchableOpacity,
 } from "react-native";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { TasksContext } from "../Helper/Context";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import { AntDesign } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 
-const Task = ({ task, navigation }) => {
+const Task = ({ task, navigation, updateIsComplete }) => {
   const { tasks, setTasks } = useContext(TasksContext);
-  // const [taskComplete, setTaskComplete] = useState(task.complete);
+  const [taskComplete, setTaskComplete] = useState(task.complete);
 
   const deleteTask = (id) => {
     setTasks(
@@ -29,7 +29,8 @@ const Task = ({ task, navigation }) => {
     setTasks(
       tasks.map((task) => {
         if (task.id === id) {
-          task.completed = true;
+          setTaskComplete((prevState) => !prevState);
+          task.completed = taskComplete;
           return task;
         }
         return task;
@@ -46,10 +47,15 @@ const Task = ({ task, navigation }) => {
           alignItems: "flex-start",
         }}
       >
+        {/* <Pressable onPress={() => updateIsComplete(task.id)}> */}
         <Pressable onPress={() => completedTask(task.id)}>
-          <View style={{ backgroundColor: "#2ecc71", alignItems: "center" }}>
+          <View
+            style={
+              !task.complete ? styles.completedButton : styles.incompleteButton
+            }
+          >
             <Ionicons name="checkmark-done" size={24} color="black" />
-            <Text>Complete</Text>
+            {!task.complete ? <Text>Complete</Text> : <Text>Incomplete</Text>}
           </View>
         </Pressable>
       </View>
@@ -76,18 +82,13 @@ const Task = ({ task, navigation }) => {
             })
           }
         >
-          <View style={{ backgroundColor: "#74b9ff", alignItems: "center" }}>
+          <View style={styles.editButton}>
             <AntDesign name="edit" size={24} color="black" />
             <Text>Edit</Text>
           </View>
         </Pressable>
         <Pressable onPress={() => deleteTask(task.id)}>
-          <View
-            style={{
-              alignItems: "center",
-              backgroundColor: "#e74c3c",
-            }}
-          >
+          <View style={styles.deleteButton}>
             <AntDesign name="delete" size={24} color="black" />
             <Text>Delete</Text>
           </View>
@@ -113,16 +114,13 @@ const Task = ({ task, navigation }) => {
     >
       <View style={task.reminder ? styles.withReminder : styles.container}>
         <View style={styles.taskItem}>
-          <View style={styles.taskWidth}>
-            <Text>{task.task}</Text>
-            {task.dueDate !== new Date(0).toLocaleDateString() && (
-              <View style={styles.dueDate}>
-                <Text>Due Date: </Text>
-                <Text>{task.dueDate}</Text>
-              </View>
-            )}
-          </View>
-          <View style={styles.taskButtons}></View>
+          <Text style={{ width: "50%" }}>{task.task}</Text>
+          {task.dueDate !== new Date(0).toLocaleDateString() && (
+            <View style={styles.dueDate}>
+              <Text>Due Date: </Text>
+              <Text>{task.dueDate}</Text>
+            </View>
+          )}
         </View>
       </View>
     </Swipeable>
@@ -131,23 +129,20 @@ const Task = ({ task, navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
+    height: 75,
     borderWidth: 1,
-    borderColor: "#000",
     borderStyle: "solid",
-    margin: 1,
+    marginVertical: 3,
     backgroundColor: "#fff",
   },
   withReminder: {
+    height: 75,
     borderWidth: 1,
-    borderColor: "#000",
     borderLeftColor: "#2ecc71",
     borderLeftWidth: 5,
     borderStyle: "solid",
     margin: 1,
     backgroundColor: "#fff",
-  },
-  taskWidth: {
-    width: 175,
   },
   taskItem: {
     flexDirection: "row",
@@ -161,10 +156,36 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   editButton: {
-    backgroundColor: "#3498db",
+    height: 75,
+    width: 70,
+    marginVertical: 3,
+    backgroundColor: "#74b9ff",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  deleteButton: {
+    height: 75,
+    width: 70,
+    marginVertical: 3,
+    backgroundColor: "#e74c3c",
+    alignItems: "center",
+    justifyContent: "center",
   },
   completedButton: {
+    height: 75,
+    width: 70,
+    marginVertical: 3,
+    justifyContent: "center",
     backgroundColor: "#2ecc71",
+    alignItems: "center",
+  },
+  incompleteButton: {
+    height: 75,
+    width: 70,
+    marginVertical: 3,
+    justifyContent: "center",
+    backgroundColor: "#9b59b6",
+    alignItems: "center",
   },
 });
 

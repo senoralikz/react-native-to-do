@@ -6,7 +6,7 @@ import {
   Button,
   Alert,
   Switch,
-  TouchableOpacity,
+  Keyboard,
 } from "react-native";
 import React, { useState, useContext } from "react";
 import { TasksContext } from "../Helper/Context";
@@ -15,7 +15,7 @@ import { v4 as uuidv4 } from "uuid";
 import DueDate from "./DueDate";
 import Reminder from "./Reminder";
 
-const AddTask = () => {
+const AddTask = ({ isComplete }) => {
   const { tasks, setTasks } = useContext(TasksContext);
   const [text, setText] = useState("");
   const [isReminderEnabled, setIsReminderEnabled] = useState(false);
@@ -37,12 +37,13 @@ const AddTask = () => {
             id: uuidv4(),
             task: text,
             dueDate: dueDate,
-            reminder: isReminderEnabled,
-            completed: false,
+            reminder: false,
+            completed: isComplete,
           },
         ];
       });
       setText("");
+      Keyboard.dismiss();
     } else {
       Alert.alert("Oops!", "There is no task to add", { text: "Ok" });
     }
