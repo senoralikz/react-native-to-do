@@ -37,7 +37,7 @@ const AddTask = ({ isComplete }) => {
             id: uuidv4(),
             task: text,
             dueDate: dueDate,
-            reminder: false,
+            reminder: isReminderEnabled,
             completed: isComplete,
           },
         ];

@@ -1,12 +1,23 @@
 import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import { useContext } from "react";
+import { UserContext } from "../Helper/Context";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { Drawer } from "react-native-paper";
+import { getAuth } from "firebase/auth";
 
 const DrawerContents = (props) => {
+  const { user, setUser } = useContext(UserContext);
+  const auth = getAuth();
+
+  const handleSignOut = () => {
+    auth.signOut().then(() => console.log("user is signed out"));
+    setUser("");
+  };
+
   return (
-    <View style={{ flex: 1, marginTop: 15 }}>
+    <View style={styles.container}>
       <DrawerContentScrollView {...props}>
+        <Text style={{ paddingHorizontal: 15 }}>{user.email}</Text>
         <View>
           {/* <Text>DrawerContents</Text> */}
           <DrawerItem
@@ -24,7 +35,7 @@ const DrawerContents = (props) => {
         </View>
       </DrawerContentScrollView>
       <Drawer.Section style={styles.bottomDrawerSection}>
-        <Drawer.Item label="Sign Out" onPress={() => alert("Signing Out")} />
+        <Drawer.Item label="Sign Out" onPress={handleSignOut} />
       </Drawer.Section>
     </View>
   );
@@ -34,6 +45,7 @@ export default DrawerContents;
 
 const styles = StyleSheet.create({
   container: {
-    // marginTop: 15,
+    flex: 1,
+    marginTop: 15,
   },
 });

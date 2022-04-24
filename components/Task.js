@@ -13,9 +13,9 @@ import Swipeable from "react-native-gesture-handler/Swipeable";
 import { AntDesign } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 
-const Task = ({ task, navigation, updateIsComplete }) => {
+const Task = ({ task, navigation, updateIsComplete, isComplete }) => {
   const { tasks, setTasks } = useContext(TasksContext);
-  const [taskComplete, setTaskComplete] = useState(task.complete);
+  const [taskComplete, setTaskComplete] = useState(isComplete);
 
   const deleteTask = (id) => {
     setTasks(
