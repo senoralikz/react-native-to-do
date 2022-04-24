@@ -38,11 +38,11 @@ const DrawerRoutes = () => {
         component={StackRoutes}
         options={{ title: "To Do or Not To Do" }}
       />
-      <Drawer.Screen
+      {/* <Drawer.Screen
         name="HomeScreenTest"
         component={HomeScreen}
         options={{ title: "Home test" }}
-      />
+      /> */}
       <Drawer.Screen
         name="TasksCompleted"
         component={CompletedTasksScreen}

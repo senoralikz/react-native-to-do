@@ -9,6 +9,7 @@ const LogInScreen = ({ navigation }) => {
         title="To Home Screen"
         onPress={() => navigation.replace("Home")}
       />
+      <Button title="Sign up" onPress={() => navigation.navigate("SignUp")} />
     </View>
   );
 };
@@ -20,5 +21,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#fff",
   },
 });

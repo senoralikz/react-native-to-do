@@ -8,41 +8,22 @@ import EditTaskScreen from "./screens/EditTaskScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import CompletedTasksScreen from "./screens/CompletedTasksScreen";
 import { TasksContext } from "./Helper/Context";
+import { UserContext } from "./Helper/Context";
 import { StatusBar } from "expo-status-bar";
 import { Button } from "react-native";
 import Header from "./components/Header";
 
-import StackRoutes from "./Routes/StackRoutes";
+import AuthStackRoutes from "./Routes/AuthStackRoutes";
 import DrawerRoutes from "./Routes/DrawerRoutes";
 
-// const DrawerRoutes = () => {
-//   return (
-//     <Drawer.Navigator
-//       screenOptions={{
-//         drawerPosition: "right",
-//         swipeEnabled: false,
-//       }}
-//     >
-//       <Drawer.Screen name="Home" component={HomeScreen} />
-//       <Drawer.Screen
-//         name="TasksCompleted"
-//         component={CompletedTasksScreen}
-//         option={{
-//           title: "Tasks Completed",
-//           headerBackTitleVisible: false,
-//         }}
-//       />
-//     </Drawer.Navigator>
-//   );
-// };
-
 export default function App() {
+  const [user, setUser] = useState([]);
   const [tasks, setTasks] = useState([]);
 
   return (
-    <TasksContext.Provider value={{ tasks, setTasks }}>
+    <TasksContext.Provider value={{ tasks, setTasks, user, setUser }}>
       <NavigationContainer>
-        {/* <StackRoutes /> */}
+        {/* {user ? <AuthStackRoutes /> : <DrawerRoutes />} */}
         <DrawerRoutes />
       </NavigationContainer>
       <StatusBar style="auto" />
