@@ -13,29 +13,19 @@ import { TasksContext } from "../Helper/Context";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import AddTask from "../components/AddTask";
 import Task from "../components/Task";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import Header from "../components/Header";
 
 const HomeScreen = ({ navigation }) => {
   const { tasks, setTasks } = useContext(TasksContext);
   const [isComplete, setIsComplete] = useState(false);
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      title: "To Do or Not To Do",
-      headerTitleAlign: "left",
-      headerTitleStyle: { fontSize: 20 },
-      headerRight: () => (
-        <Pressable onPress={() => navigation.navigate("Profile")}>
-          <MaterialCommunityIcons
-            name="account-circle"
-            size={28}
-            color="black"
-          />
-        </Pressable>
-      ),
-      headerBackVisible: false,
-    });
-  }, [navigation]);
+  // useLayoutEffect(() => {
+  //   navigation.setOptions({
+  //     title: "To Do or Not To Do",
+  //     headerTitle: () => <Header navigation={navigation} />,
+  //     headerBackVisible: false,
+  //   });
+  // }, [navigation]);
 
   const updateIsComplete = (id) => {
     setTasks(

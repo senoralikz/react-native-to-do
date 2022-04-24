@@ -23,12 +23,6 @@ const EditTaskScreen = ({ navigation: { goBack }, route }) => {
     route.params.dueDate !== new Date(0).toLocaleDateString() ? true : false
   );
 
-  // setUpdateDateToggle(() => {
-  //   updateDate.toLocaleDateString() !== new Date(0).toLocaleDateString()
-  //     ? true
-  //     : false;
-  // });
-
   const onUpdateDateChange = (event, selectedDate) => {
     const currentDate = selectedDate;
     setUpdateDate(currentDate);

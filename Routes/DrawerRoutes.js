@@ -1,0 +1,55 @@
+import { View, Text, Pressable } from "react-native";
+import React from "react";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import StackRoutes from "./StackRoutes";
+import DrawerContents from "../screens/DrawerContents";
+import HomeScreen from "../screens/HomeScreen";
+import CompletedTasksScreen from "../screens/CompletedTasksScreen";
+import { Feather } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+
+const Drawer = createDrawerNavigator();
+
+const DrawerRoutes = () => {
+  return (
+    <Drawer.Navigator
+      drawerContent={(props) => <DrawerContents {...props} />}
+      backBehavior="history"
+      screenOptions={{
+        // headerLeft: () => (
+        //   <Pressable onPress={() => navigation.openDrawer()}>
+        //     {/* <Feather name="menu" size={24} color="black" /> */}
+        //     <MaterialCommunityIcons
+        //       name="account-circle"
+        //       size={24}
+        //       color="black"
+        //     />
+        //   </Pressable>
+        // ),
+        swipeEnabled: false,
+        headerTitleStyle: {
+          fontWeight: "bold",
+          fontSize: 24,
+        },
+      }}
+    >
+      <Drawer.Screen
+        name="HomeScreen"
+        component={StackRoutes}
+        options={{ title: "To Do or Not To Do" }}
+      />
+      <Drawer.Screen
+        name="HomeScreenTest"
+        component={HomeScreen}
+        options={{ title: "Home test" }}
+      />
+      <Drawer.Screen
+        name="TasksCompleted"
+        component={CompletedTasksScreen}
+        options={{ title: "Completed Tasks" }}
+      />
+    </Drawer.Navigator>
+  );
+};
+
+export default DrawerRoutes;
