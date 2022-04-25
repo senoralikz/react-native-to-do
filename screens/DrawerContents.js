@@ -4,13 +4,18 @@ import { UserContext } from "../Helper/Context";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { Drawer } from "react-native-paper";
 import { getAuth } from "firebase/auth";
+// import { auth } from "../firebaseConfig";
 
 const DrawerContents = (props) => {
   const { user, setUser } = useContext(UserContext);
+
   const auth = getAuth();
+  const currentUser = auth.currentUser;
 
   const handleSignOut = () => {
-    auth.signOut().then(() => console.log("user is signed out"));
+    auth
+      .signOut()
+      .then(() => console.log("current user signed out:", currentUser.email));
     setUser("");
   };
 
@@ -47,5 +52,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 15,
+  },
+  bottomDrawerSection: {
+    marginBottom: 25,
   },
 });

@@ -8,12 +8,16 @@ import {
   Switch,
   Keyboard,
 } from "react-native";
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { TasksContext } from "../Helper/Context";
 import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
 import DueDate from "./DueDate";
 import Reminder from "./Reminder";
+import { getAuth } from "firebase/auth";
+import { collection, addDoc, getDocs } from "firebase/firestore";
+import { db } from "../firebaseConfig";
+import { getTasks } from "../Helper/firebaseApiFns";
 
 const AddTask = ({ isComplete }) => {
   const { tasks, setTasks } = useContext(TasksContext);
@@ -22,32 +26,77 @@ const AddTask = ({ isComplete }) => {
   const [showDueDate, setShowDueDate] = useState(false);
   const [date, setDate] = useState(new Date());
 
+  const auth = getAuth();
+  const currentUser = auth.currentUser;
+
   let dueDate = new Date(0).toLocaleDateString();
 
   if (showDueDate) {
     dueDate = date.toLocaleDateString();
   }
 
-  const addTask = () => {
-    if (text) {
-      setTasks((prevTasks) => {
-        return [
-          ...prevTasks,
-          {
-            id: uuidv4(),
-            task: text,
-            dueDate: dueDate,
-            reminder: isReminderEnabled,
-            completed: isComplete,
-          },
-        ];
+  const getTasks = async () => {
+    try {
+      await getDocs(collection(db, "tasks")).then((response) => {
+        // console.log("this is the collection of tasks", response.docs)
+        let gettingTasks = [];
+        response.docs.forEach((doc) => {
+          if (doc.data().userId === currentUser.uid) {
+            gettingTasks.push({ ...doc.data(), taskId: doc.id });
+          }
+        });
+        setTasks(gettingTasks);
+        console.log(gettingTasks);
       });
+    } catch (error) {
+      console.error("could not get tasks:", error);
+    }
+  };
+
+  const addTask = async () => {
+    if (text) {
+      try {
+        await addDoc(collection(db, "tasks"), {
+          // taskId: ,
+          task: text,
+          dueDate: dueDate,
+          reminder: isReminderEnabled,
+          completed: isComplete,
+          userId: currentUser.uid,
+        }).then(getTasks);
+        // console.log("Document written with ID: ", docRef.id);
+      } catch (error) {
+        console.error("Error adding document: ", error);
+      }
+      // getTasks();
       setText("");
       Keyboard.dismiss();
     } else {
       Alert.alert("Oops!", "There is no task to add", { text: "Ok" });
     }
   };
+
+  // const addTask = () => {
+  //   if (text) {
+  //     setTasks((prevTasks) => {
+  //       return [
+  //         ...prevTasks,
+  //         {
+  //           taskID: uuidv4(),
+  //           task: text,
+  //           dueDate: dueDate,
+  //           reminder: isReminderEnabled,
+  //           completed: isComplete,
+  //           userID: currentUser.uid
+  //         },
+  //       ];
+  //     });
+  //     setText("");
+  //     Keyboard.dismiss();
+  //   } else {
+  //     Alert.alert("Oops!", "There is no task to add", { text: "Ok" });
+  //   }
+  // };
 
   const toggleDateSwitch = () => {
     setShowDueDate((previousState) => !previousState);

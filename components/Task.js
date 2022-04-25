@@ -12,30 +12,50 @@ import { TasksContext } from "../Helper/Context";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import { AntDesign } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
+import {
+  collection,
+  getDocs,
+  doc,
+  updateDoc,
+  deleteDoc,
+} from "firebase/firestore";
+import { db } from "../firebaseConfig";
+import { getAuth } from "firebase/auth";
 
-const Task = ({ task, navigation, updateIsComplete, isComplete }) => {
+const Task = ({ task, navigation, updateIsComplete }) => {
   const { tasks, setTasks } = useContext(TasksContext);
-  const [taskComplete, setTaskComplete] = useState(isComplete);
+  const [taskComplete, setTaskComplete] = useState(task.completed);
 
-  const deleteTask = (id) => {
-    setTasks(
-      tasks.filter((task) => {
-        return task.id !== id;
-      })
-    );
+  const auth = getAuth();
+  const currentUser = auth.currentUser;
+
+  const getTasks = async () => {
+    try {
+      await getDocs(collection(db, "tasks")).then((response) => {
+        // console.log("this is the collection of tasks", response.docs)
+        let gettingTasks = [];
+        response.docs.forEach((doc) => {
+          if (doc.data().userId === currentUser.uid) {
+            gettingTasks.push({ ...doc.data(), taskId: doc.id });
+          }
+        });
+        setTasks(gettingTasks);
+        console.log(gettingTasks);
+      });
+    } catch (error) {
+      console.error("could not get tasks:", error);
+    }
   };
 
-  const completedTask = (id) => {
-    setTasks(
-      tasks.map((task) => {
-        if (task.id === id) {
-          setTaskComplete((prevState) => !prevState);
-          task.completed = taskComplete;
-          return task;
-        }
-        return task;
-      })
-    );
+  const deleteTask = async (id) => {
+    await deleteDoc(doc(db, "tasks", id)).then(getTasks);
+  };
+
+  const completedTask = async (id) => {
+    setTaskComplete(!taskComplete);
+    await updateDoc(doc(db, "tasks", id), {
+      completed: taskComplete,
+    }).then(getTasks);
   };
 
   const leftSwipeActions = () => {
@@ -48,7 +68,7 @@ const Task = ({ task, navigation, updateIsComplete, isComplete }) => {
         }}
       >
         {/* <Pressable onPress={() => updateIsComplete(task.id)}> */}
-        <Pressable onPress={() => completedTask(task.id)}>
+        <Pressable onPress={() => completedTask(task.taskId)}>
           <View
             style={
               !task.complete ? styles.completedButton : styles.incompleteButton
@@ -75,7 +95,7 @@ const Task = ({ task, navigation, updateIsComplete, isComplete }) => {
           onPress={() =>
             navigation.navigate("EditTaskScreen", {
               task: task.task,
-              id: task.id,
+              taskId: task.taskId,
               reminder: task.reminder,
               dueDate: task.dueDate,
               completed: task.completed,
@@ -87,7 +107,7 @@ const Task = ({ task, navigation, updateIsComplete, isComplete }) => {
             <Text>Edit</Text>
           </View>
         </Pressable>
-        <Pressable onPress={() => deleteTask(task.id)}>
+        <Pressable onPress={() => deleteTask(task.taskId)}>
           <View style={styles.deleteButton}>
             <AntDesign name="delete" size={24} color="black" />
             <Text>Delete</Text>
@@ -122,6 +142,7 @@ const Task = ({ task, navigation, updateIsComplete, isComplete }) => {
             </View>
           )}
         </View>
+        <Text>{currentUser.email}</Text>
       </View>
     </Swipeable>
   );

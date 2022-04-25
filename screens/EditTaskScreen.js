@@ -13,6 +13,8 @@ import {
 import { TasksContext } from "../Helper/Context";
 import DueDate from "../components/DueDate";
 import Reminder from "../components/Reminder";
+import { doc, updateDoc } from "firebase/firestore";
+import { db } from "../firebaseConfig";
 
 const EditTaskScreen = ({ navigation: { goBack }, route }) => {
   const { tasks, setTasks } = useContext(TasksContext);
@@ -36,30 +38,36 @@ const EditTaskScreen = ({ navigation: { goBack }, route }) => {
     setUpdateDateToggle((previousState) => !previousState);
   };
 
-  const updateTask = () => {
-    setTasks(
-      tasks.map((task) => {
-        if (task.id === route.params.id) {
-          if (text) {
-            task.task = text;
-            task.reminder = isEnabled;
-            {
-              updateDateToggle
-                ? (task.dueDate = updateDate.toLocaleDateString())
-                : (task.dueDate = new Date(0).toLocaleDateString());
-            }
-            setText("");
-            goBack();
-            return task;
-          } else {
-            Alert.alert("Oops!", "You can't leave the task field empty", {
-              text: "Ok",
-            });
-          }
-        }
-        return task;
-      })
-    );
+  const updateTask = async () => {
+    if (text) {
+      let newDueDate;
+      if (updateDateToggle) {
+        newDueDate = updateDate.toLocaleDateString();
+      } else {
+        newDueDate = new Date(0).toLocaleDateString();
+      }
+      // {
+      //           updateDateToggle
+      //             ? (dueDate = updateDate.toLocaleDateString())
+      //             : (dueDate = new Date(0).toLocaleDateString())
+      //         }
+      try {
+        //
+        await updateDoc(doc(db, "tasks", route.params.taskId), {
+          task: text,
+          reminder: isEnabled,
+          dueDate: newDueDate,
+        })
+          .then(setText(""))
+          .then(goBack());
+      } catch (error) {
+        console.error("could not update", error);
+      }
+    } else {
+      Alert.alert("Oops!", "You can't leave the task field empty", {
+        text: "Ok",
+      });
+    }
   };
 
   return (

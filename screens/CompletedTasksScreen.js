@@ -1,11 +1,22 @@
-import { StyleSheet, Text, View, FlatList } from "react-native";
-import React, { useContext, useLayoutEffect } from "react";
+import { StyleSheet, Text, View, FlatList, RefreshControl } from "react-native";
+import { useState, useContext, useLayoutEffect, useCallback } from "react";
 import { TasksContext } from "../Helper/Context";
 import Task from "../components/Task";
 import Header from "../components/Header";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../firebaseConfig";
+import { getAuth } from "firebase/auth";
+
+const wait = (timeout) => {
+  return new Promise((resolve) => setTimeout(resolve, timeout));
+};
 
 const CompletedTasksScreen = ({ navigation }) => {
   const { tasks, setTasks } = useContext(TasksContext);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const auth = getAuth();
+  const currentUser = auth.currentUser;
 
   // useLayoutEffect(() => {
   //   navigation.setOptions({
@@ -13,6 +24,30 @@ const CompletedTasksScreen = ({ navigation }) => {
   //     headerTitle: () => <Header navigation={navigation} />,
   //   });
   // }, [navigation]);
+
+  const getTasks = async () => {
+    try {
+      await getDocs(collection(db, "tasks")).then((response) => {
+        // console.log("this is the collection of tasks", response.docs)
+        let gettingTasks = [];
+        response.docs.forEach((doc) => {
+          if (doc.data().userId === currentUser.uid) {
+            gettingTasks.push({ ...doc.data(), taskId: doc.id });
+          }
+        });
+        setTasks(gettingTasks);
+        console.log(gettingTasks);
+      });
+    } catch (error) {
+      console.error("could not get tasks:", error);
+    }
+  };
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    getTasks();
+    wait(2000).then(() => setRefreshing(false));
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -22,16 +57,23 @@ const CompletedTasksScreen = ({ navigation }) => {
         renderItem={({ item }) =>
           item.completed && <Task task={item} navigation={navigation} />
         }
-        keyExtractor={(item) => item.id}
-        // ListEmptyComponent={
-        //   <Text style={{ textAlign: "center" }}>No Completed Tasks Yet</Text>
-        // }
+        ListEmptyComponent={
+          tasks.every((task) => task.completed === false) && (
+            <Text style={{ marginBottom: 505, textAlign: "center" }}>
+              You Have Not Completed Any Tasks Yet
+            </Text>
+          )
+        }
+        keyExtractor={(item) => item.taskId}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       />
-      {tasks.every((task) => task.completed === false) && (
+      {/* {tasks.every((task) => task.completed === false) && (
         <Text style={{ marginBottom: 505, textAlign: "center" }}>
           No Completed Tasks Yet
         </Text>
-      )}
+      )} */}
     </View>
   );
 };
