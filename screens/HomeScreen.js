@@ -16,7 +16,14 @@ import Task from "../components/Task";
 import Header from "../components/Header";
 import TasksList from "../components/TasksList";
 import { getAuth } from "firebase/auth";
-import { collection, getDocs } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  onSnapshot,
+  orderBy,
+} from "firebase/firestore";
 import { useEffect } from "react";
 import { db } from "../firebaseConfig";
 import { getTasks } from "../Helper/firebaseApiFns";
@@ -32,54 +39,28 @@ const HomeScreen = ({ navigation }) => {
 
   const auth = getAuth();
   const currentUser = auth.currentUser;
+  const tasksRef = collection(db, "tasks");
+  const q = query(
+    tasksRef,
+    where("userId", "==", currentUser.uid),
+    orderBy("createdAt", "desc")
+  );
+
+  // const onRefresh = useCallback(() => {
+  //   setRefreshing(true);
+  //   getTasks();
+  //   wait(2000).then(() => setRefreshing(false));
+  // }, []);
 
   useEffect(() => {
-    getTasks();
+    onSnapshot(q, (snapshot) => {
+      setTasks(
+        snapshot.docs.map((doc) => {
+          return { ...doc.data(), taskId: doc.id };
+        })
+      );
+    });
   }, []);
-
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    getTasks();
-    wait(2000).then(() => setRefreshing(false));
-  }, []);
-
-  const getTasks = async () => {
-    try {
-      await getDocs(collection(db, "tasks")).then((response) => {
-        // console.log("this is the collection of tasks", response.docs)
-        let gettingTasks = [];
-        response.docs.forEach((doc) => {
-          if (doc.data().userId === currentUser.uid) {
-            gettingTasks.push({ ...doc.data(), taskId: doc.id });
-          }
-        });
-        setTasks(gettingTasks);
-        console.log(gettingTasks);
-      });
-    } catch (error) {
-      console.error("could not get tasks:", error);
-    }
-  };
-
-  const getCurrentUser = () => {
-    if (currentUser) {
-      // User is signed in, see docs for a list of available properties
-      // https://firebase.google.com/docs/reference/js/firebase.User
-      // ...
-      console.log("this is the current user:", currentUser);
-    } else {
-      // No user is signed in.
-      console.log("could not get current user");
-    }
-  };
-
-  // useLayoutEffect(() => {
-  //   navigation.setOptions({
-  //     title: "To Do or Not To Do",
-  //     headerTitle: () => <Header navigation={navigation} />,
-  //     headerBackVisible: false,
-  //   });
-  // }, [navigation]);
 
   const updateIsComplete = (id) => {
     setTasks(
@@ -119,9 +100,9 @@ const HomeScreen = ({ navigation }) => {
               </Text>
             )
           }
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
+          // refreshControl={
+          //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          // }
           style={styles.tasksList}
         />
         {/* {tasks && tasks.every((task) => task.completed === true) && (

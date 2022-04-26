@@ -22,40 +22,22 @@ import {
 import { db } from "../firebaseConfig";
 import { getAuth } from "firebase/auth";
 
-const Task = ({ task, navigation, updateIsComplete }) => {
+const Task = ({ task, navigation }) => {
   const { tasks, setTasks } = useContext(TasksContext);
   const [taskComplete, setTaskComplete] = useState(task.completed);
 
   const auth = getAuth();
   const currentUser = auth.currentUser;
 
-  const getTasks = async () => {
-    try {
-      await getDocs(collection(db, "tasks")).then((response) => {
-        // console.log("this is the collection of tasks", response.docs)
-        let gettingTasks = [];
-        response.docs.forEach((doc) => {
-          if (doc.data().userId === currentUser.uid) {
-            gettingTasks.push({ ...doc.data(), taskId: doc.id });
-          }
-        });
-        setTasks(gettingTasks);
-        console.log(gettingTasks);
-      });
-    } catch (error) {
-      console.error("could not get tasks:", error);
-    }
-  };
-
   const deleteTask = async (id) => {
-    await deleteDoc(doc(db, "tasks", id)).then(getTasks);
+    await deleteDoc(doc(db, "tasks", id));
   };
 
   const completedTask = async (id) => {
     setTaskComplete(!taskComplete);
     await updateDoc(doc(db, "tasks", id), {
       completed: taskComplete,
-    }).then(getTasks);
+    });
   };
 
   const leftSwipeActions = () => {
@@ -67,7 +49,6 @@ const Task = ({ task, navigation, updateIsComplete }) => {
           alignItems: "flex-start",
         }}
       >
-        {/* <Pressable onPress={() => updateIsComplete(task.id)}> */}
         <Pressable onPress={() => completedTask(task.taskId)}>
           <View
             style={
@@ -117,14 +98,6 @@ const Task = ({ task, navigation, updateIsComplete }) => {
     );
   };
 
-  const swipeFromLeftOpen = () => {
-    alert("Swipe from left");
-  };
-
-  const swipeFromRightOpen = () => {
-    alert("Swipe from right");
-  };
-
   return (
     <Swipeable
       renderLeftActions={leftSwipeActions}
@@ -142,7 +115,7 @@ const Task = ({ task, navigation, updateIsComplete }) => {
             </View>
           )}
         </View>
-        <Text>{currentUser.email}</Text>
+        <Text>user: {task.userId}</Text>
       </View>
     </Swipeable>
   );

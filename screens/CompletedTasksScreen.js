@@ -25,29 +25,11 @@ const CompletedTasksScreen = ({ navigation }) => {
   //   });
   // }, [navigation]);
 
-  const getTasks = async () => {
-    try {
-      await getDocs(collection(db, "tasks")).then((response) => {
-        // console.log("this is the collection of tasks", response.docs)
-        let gettingTasks = [];
-        response.docs.forEach((doc) => {
-          if (doc.data().userId === currentUser.uid) {
-            gettingTasks.push({ ...doc.data(), taskId: doc.id });
-          }
-        });
-        setTasks(gettingTasks);
-        console.log(gettingTasks);
-      });
-    } catch (error) {
-      console.error("could not get tasks:", error);
-    }
-  };
-
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    getTasks();
-    wait(2000).then(() => setRefreshing(false));
-  }, []);
+  // const onRefresh = useCallback(() => {
+  //   setRefreshing(true);
+  //   getTasks();
+  //   wait(2000).then(() => setRefreshing(false));
+  // }, []);
 
   return (
     <View style={styles.container}>

@@ -15,7 +15,7 @@ import { v4 as uuidv4 } from "uuid";
 import DueDate from "./DueDate";
 import Reminder from "./Reminder";
 import { getAuth } from "firebase/auth";
-import { collection, addDoc, getDocs } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import { getTasks } from "../Helper/firebaseApiFns";
 
@@ -28,6 +28,7 @@ const AddTask = ({ isComplete }) => {
 
   const auth = getAuth();
   const currentUser = auth.currentUser;
+  const tasksRef = collection(db, "tasks");
 
   let dueDate = new Date(0).toLocaleDateString();
 
@@ -35,68 +36,26 @@ const AddTask = ({ isComplete }) => {
     dueDate = date.toLocaleDateString();
   }
 
-  const getTasks = async () => {
-    try {
-      await getDocs(collection(db, "tasks")).then((response) => {
-        // console.log("this is the collection of tasks", response.docs)
-        let gettingTasks = [];
-        response.docs.forEach((doc) => {
-          if (doc.data().userId === currentUser.uid) {
-            gettingTasks.push({ ...doc.data(), taskId: doc.id });
-          }
-        });
-        setTasks(gettingTasks);
-        console.log(gettingTasks);
-      });
-    } catch (error) {
-      console.error("could not get tasks:", error);
-    }
-  };
-
   const addTask = async () => {
     if (text) {
       try {
-        await addDoc(collection(db, "tasks"), {
-          // taskId: ,
+        await addDoc(tasksRef, {
           task: text,
           dueDate: dueDate,
           reminder: isReminderEnabled,
           completed: isComplete,
           userId: currentUser.uid,
-        }).then(getTasks);
-        // console.log("Document written with ID: ", docRef.id);
+          createdAt: serverTimestamp(),
+        });
       } catch (error) {
         console.error("Error adding document: ", error);
       }
-      // getTasks();
       setText("");
       Keyboard.dismiss();
     } else {
       Alert.alert("Oops!", "There is no task to add", { text: "Ok" });
     }
   };
-
-  // const addTask = () => {
-  //   if (text) {
-  //     setTasks((prevTasks) => {
-  //       return [
-  //         ...prevTasks,
-  //         {
-  //           taskID: uuidv4(),
-  //           task: text,
-  //           dueDate: dueDate,
-  //           reminder: isReminderEnabled,
-  //           completed: isComplete,
-  //           userID: currentUser.uid
-  //         },
-  //       ];
-  //     });
-  //     setText("");
-  //     Keyboard.dismiss();
-  //   } else {
-  //     Alert.alert("Oops!", "There is no task to add", { text: "Ok" });
-  //   }
-  // };
 
   const toggleDateSwitch = () => {
     setShowDueDate((previousState) => !previousState);
