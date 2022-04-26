@@ -2,7 +2,6 @@
   "expo": {
     "name": "To Do or Not To Do",
     "slug": "to-do-or-not-to-do",
-    "decription": "Create tasks or to do's with reminders and due date",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
