@@ -5,6 +5,7 @@ import {
   Button,
   TextInput,
   KeyboardAvoidingView,
+  Alert,
 } from "react-native";
 import { useState } from "react";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
@@ -26,13 +27,14 @@ const LogInScreen = ({ navigation }) => {
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
-        console.log(
-          "Error Code:",
-          errorCode,
-          "------",
-          "Error Message:",
-          errorMessage
-        );
+        // console.log(
+        //   "Error Code:",
+        //   errorCode,
+        //   "------",
+        //   "Error Message:",
+        //   errorMessage
+        // );
+        Alert.alert(errorCode, errorMessage, { text: "Ok" });
       });
   };
 

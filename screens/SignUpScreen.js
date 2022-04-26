@@ -5,6 +5,7 @@ import {
   KeyboardAvoidingView,
   Button,
   TextInput,
+  Alert,
 } from "react-native";
 import { useState } from "react";
 import { app } from "../firebaseConfig";
@@ -30,13 +31,14 @@ const SignUpScreen = ({ navigation: { goBack } }) => {
           const errorCode = error.code;
           const errorMessage = error.message;
           // ..
-          console.log(
-            "Error Code:",
-            errorCode,
-            "------",
-            "Error Message:",
-            errorMessage
-          );
+          // console.log(
+          //   "Error Code:",
+          //   errorCode,
+          //   "------",
+          //   "Error Message:",
+          //   errorMessage
+          // );
+          Alert.alert(errorCode, errorMessage, { text: "Ok" });
         });
     }
   };

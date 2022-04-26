@@ -47,9 +47,9 @@ const CompletedTasksScreen = ({ navigation }) => {
           )
         }
         keyExtractor={(item) => item.taskId}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
+        // refreshControl={
+        //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        // }
       />
       {/* {tasks.every((task) => task.completed === false) && (
         <Text style={{ marginBottom: 505, textAlign: "center" }}>
