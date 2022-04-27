@@ -12,7 +12,6 @@ import { TasksContext } from "../Helper/Context";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import { AntDesign } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
-import { Shadow } from "react-native-shadow-2";
 import {
   collection,
   getDocs,
