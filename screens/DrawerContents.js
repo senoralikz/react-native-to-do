@@ -6,7 +6,7 @@ import { Drawer } from "react-native-paper";
 import { getAuth } from "firebase/auth";
 // import { auth } from "../firebaseConfig";
 
-const DrawerContents = ({ props, navigation }) => {
+const DrawerContents = (props, { navigation }) => {
   const { user, setUser } = useContext(UserContext);
 
   const auth = getAuth();
@@ -29,7 +29,7 @@ const DrawerContents = ({ props, navigation }) => {
           <DrawerItem
             label="Home"
             onPress={() => {
-              props.navigation.navigate("Home");
+              props.navigation.navigate("HomeScreen");
             }}
           />
           <DrawerItem
