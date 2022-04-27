@@ -39,23 +39,23 @@ const CompletedTasksScreen = ({ navigation }) => {
         renderItem={({ item }) =>
           item.completed && <Task task={item} navigation={navigation} />
         }
-        ListEmptyComponent={
-          tasks.every((task) => task.completed === false) && (
-            <Text style={{ marginBottom: 505, textAlign: "center" }}>
-              You Have Not Completed Any Tasks Yet
-            </Text>
-          )
-        }
+        // ListEmptyComponent={
+        //   tasks.every((task) => task.completed === false) && (
+        //     <Text style={{ marginBottom: 505, textAlign: "center" }}>
+        //       You Have Not Completed Any Tasks Yet
+        //     </Text>
+        //   )
+        // }
         keyExtractor={(item) => item.taskId}
         // refreshControl={
         //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         // }
       />
-      {/* {tasks.every((task) => task.completed === false) && (
+      {tasks.every((task) => task.completed === false) && (
         <Text style={{ marginBottom: 505, textAlign: "center" }}>
           No Completed Tasks Yet
         </Text>
-      )} */}
+      )}
     </View>
   );
 };

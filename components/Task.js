@@ -12,6 +12,7 @@ import { TasksContext } from "../Helper/Context";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import { AntDesign } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
+import { Shadow } from "react-native-shadow-2";
 import {
   collection,
   getDocs,
@@ -105,17 +106,18 @@ const Task = ({ task, navigation }) => {
       // onSwipeableRightOpen={swipeFromRightOpen}
       // onSwipeableLeftOpen={swipeFromLeftOpen}
     >
-      <View style={task.reminder ? styles.withReminder : styles.container}>
+      <View style={styles.container}>
         <View style={styles.taskItem}>
-          <Text style={{ width: "50%" }}>{task.task}</Text>
-          {task.dueDate !== new Date(0).toLocaleDateString() && (
-            <View style={styles.dueDate}>
-              <Text>Due Date: </Text>
-              <Text>{task.dueDate}</Text>
-            </View>
+          <Text>{task.task}</Text>
+          {task.reminder && (
+            <Ionicons name="notifications" size={18} color="gold" />
           )}
         </View>
-        <Text>user: {task.userId}</Text>
+        {task.dueDate !== new Date(0).toLocaleDateString() && (
+          <View>
+            <Text>Due Date: {task.dueDate}</Text>
+          </View>
+        )}
       </View>
     </Swipeable>
   );
@@ -126,28 +128,17 @@ const styles = StyleSheet.create({
     height: 75,
     borderWidth: 1,
     borderStyle: "solid",
-    marginVertical: 3,
+    borderRadius: 20,
+    marginVertical: 4,
     backgroundColor: "#fff",
-  },
-  withReminder: {
-    height: 75,
-    borderWidth: 1,
-    borderLeftColor: "#2ecc71",
-    borderLeftWidth: 5,
-    borderStyle: "solid",
-    margin: 1,
-    backgroundColor: "#fff",
+    justifyContent: "space-between",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 10,
   },
   taskItem: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    margin: 10,
-  },
-  taskButtons: {
-    flexDirection: "row",
-  },
-  dueDate: {
-    flexDirection: "row",
+    width: "50%",
   },
   editButton: {
     height: 75,

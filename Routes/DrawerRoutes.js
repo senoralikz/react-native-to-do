@@ -14,7 +14,6 @@ const DrawerRoutes = () => {
   return (
     <Drawer.Navigator
       drawerContent={(props) => <DrawerContents {...props} />}
-      backBehavior="history"
       screenOptions={{
         // headerLeft: () => (
         //   <Pressable onPress={() => navigation.openDrawer()}>
@@ -26,6 +25,7 @@ const DrawerRoutes = () => {
         //     />
         //   </Pressable>
         // ),
+        drawerType: "front",
         swipeEnabled: false,
         headerTitleStyle: {
           fontWeight: "bold",

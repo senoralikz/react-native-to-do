@@ -43,7 +43,7 @@ const HomeScreen = ({ navigation }) => {
   const q = query(
     tasksRef,
     where("userId", "==", currentUser.uid),
-    orderBy("createdAt", "desc")
+    orderBy("createdAt")
   );
 
   // const onRefresh = useCallback(() => {
@@ -93,23 +93,23 @@ const HomeScreen = ({ navigation }) => {
             )
           }
           keyExtractor={(item) => item.taskId}
-          ListEmptyComponent={
-            tasks.every((task) => task.completed === true) && (
-              <Text style={{ marginBottom: 505, textAlign: "center" }}>
-                Nothing to do
-              </Text>
-            )
-          }
+          // ListEmptyComponent={
+          //   tasks.every((task) => task.completed === true) && (
+          //     <Text style={{ marginBottom: 505, textAlign: "center" }}>
+          //       Nothing to do
+          //     </Text>
+          //   )
+          // }
           // refreshControl={
           //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           // }
           style={styles.tasksList}
         />
-        {/* {tasks && tasks.every((task) => task.completed === true) && (
+        {tasks && tasks.every((task) => task.completed === true) && (
           <Text style={{ marginBottom: 505, textAlign: "center" }}>
             Nothing to do
           </Text>
-        )} */}
+        )}
       </View>
     </View>
   );
@@ -117,7 +117,7 @@ const HomeScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 50,
+    paddingTop: 30,
     height: "100%",
     backgroundColor: "#fff",
   },

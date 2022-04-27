@@ -6,7 +6,7 @@ import { Drawer } from "react-native-paper";
 import { getAuth } from "firebase/auth";
 // import { auth } from "../firebaseConfig";
 
-const DrawerContents = (props) => {
+const DrawerContents = ({ props, navigation }) => {
   const { user, setUser } = useContext(UserContext);
 
   const auth = getAuth();
@@ -16,6 +16,7 @@ const DrawerContents = (props) => {
     auth
       .signOut()
       .then(() => console.log("current user signed out:", currentUser.email));
+    navigation.closeDrawer();
     setUser("");
   };
 

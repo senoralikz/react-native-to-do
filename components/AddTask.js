@@ -7,6 +7,7 @@ import {
   Alert,
   Switch,
   Keyboard,
+  Pressable,
 } from "react-native";
 import React, { useState, useContext, useEffect } from "react";
 import { TasksContext } from "../Helper/Context";
@@ -18,6 +19,7 @@ import { getAuth } from "firebase/auth";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import { getTasks } from "../Helper/firebaseApiFns";
+import { AntDesign } from "@expo/vector-icons";
 
 const AddTask = ({ isComplete }) => {
   const { tasks, setTasks } = useContext(TasksContext);
@@ -75,12 +77,17 @@ const AddTask = ({ isComplete }) => {
 
   return (
     <View>
-      <TextInput
-        style={styles.textInput}
-        placeholder="Add Task..."
-        value={text}
-        onChangeText={(value) => setText(value)}
-      />
+      <View style={styles.taskInput}>
+        <TextInput
+          style={{ paddingLeft: 5, width: "90%" }}
+          placeholder="Add Task..."
+          value={text}
+          onChangeText={(value) => setText(value)}
+        />
+        <Pressable onPress={addTask}>
+          <AntDesign name="pluscircle" size={26} color="royalblue" />
+        </Pressable>
+      </View>
       <View style={styles.taskOptions}>
         <DueDate
           showDueDate={showDueDate}
@@ -93,18 +100,19 @@ const AddTask = ({ isComplete }) => {
           toggleSwitch={toggleReminderSwitch}
         />
       </View>
-      <Button title="Add" onPress={addTask} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  textInput: {
-    // width: 288,
+  taskInput: {
     padding: 5,
     borderWidth: 1,
     borderColor: "#000",
+    borderRadius: 20,
     borderStyle: "solid",
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   taskOptions: {
     flexDirection: "row",
