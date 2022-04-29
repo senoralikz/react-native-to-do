@@ -1,7 +1,8 @@
 import "react-native-gesture-handler";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./firebaseConfig";
 import LogInScreen from "./screens/LogInScreen";
 import HomeScreen from "./screens/HomeScreen";
 import EditTaskScreen from "./screens/EditTaskScreen";
@@ -20,21 +21,25 @@ export default function App() {
   const [user, setUser] = useState("");
   const [tasks, setTasks] = useState([]);
 
-  const auth = getAuth();
-
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      // User is signed in, see docs for a list of available properties
-      // https://firebase.google.com/docs/reference/js/firebase.User
-      const uid = user.uid;
-      // ...
-      setUser(user);
-    } else {
-      // User is signed out
-      // ...
-      setUser("");
-    }
-  });
+  useEffect(() => {
+    const unsubAuth = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in, see docs for a list of available properties
+        // https://firebase.google.com/docs/reference/js/firebase.User
+        const uid = user.uid;
+        // ...
+        setUser(user);
+        console.log("signed in with user (from App.js):", user);
+      } else {
+        // User is signed out
+        // ...
+        console.log("user logged out");
+        setUser("");
+        console.log("signed out user (from App.js):", user);
+      }
+    });
+    return unsubAuth;
+  }, []);
 
   return (
     <UserContext.Provider value={{ user, setUser }}>

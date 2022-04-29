@@ -5,7 +5,7 @@ import Task from "../components/Task";
 import Header from "../components/Header";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebaseConfig";
-import { getAuth } from "firebase/auth";
+import { auth } from "../firebaseConfig";
 
 const wait = (timeout) => {
   return new Promise((resolve) => setTimeout(resolve, timeout));
@@ -15,7 +15,6 @@ const CompletedTasksScreen = ({ navigation }) => {
   const { tasks, setTasks } = useContext(TasksContext);
   const [refreshing, setRefreshing] = useState(false);
 
-  const auth = getAuth();
   const currentUser = auth.currentUser;
 
   // useLayoutEffect(() => {

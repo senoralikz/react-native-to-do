@@ -9,17 +9,15 @@ import {
 } from "react-native";
 import { useState } from "react";
 import {
-  getAuth,
   signInWithEmailAndPassword,
   signInWithRedirect,
   GoogleAuthProvider,
 } from "firebase/auth";
+import { auth } from "../firebaseConfig";
 
 const LogInScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const auth = getAuth();
 
   const signInWithGoogle = () => {
     signInWithRedirect(auth, provider);

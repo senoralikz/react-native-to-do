@@ -8,36 +8,35 @@ import {
   Alert,
 } from "react-native";
 import { useState } from "react";
-import { app } from "../firebaseConfig";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-// import { auth } from "../firebaseConfig";
+import { db, auth } from "../firebaseConfig";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { setDoc, doc, addDoc, collection } from "firebase/firestore";
 
 const SignUpScreen = ({ navigation: { goBack } }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const auth = getAuth();
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     if (!email || !password) {
       alert("Please enter an email and password");
     } else {
-      createUserWithEmailAndPassword(auth, email, password)
+      await createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           // Signed in
           const user = userCredential.user;
-          console.log(user);
+          console.log("signed up:", user);
         })
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
           // ..
-          // console.log(
-          //   "Error Code:",
-          //   errorCode,
-          //   "------",
-          //   "Error Message:",
-          //   errorMessage
-          // );
+          console.log(
+            "Error Code:",
+            errorCode,
+            "------",
+            "Error Message:",
+            errorMessage
+          );
           Alert.alert(errorCode, errorMessage, { text: "Ok" });
         });
     }

@@ -15,10 +15,11 @@ import AddTask from "../components/AddTask";
 import Task from "../components/Task";
 import Header from "../components/Header";
 import TasksList from "../components/TasksList";
-import { getAuth } from "firebase/auth";
+import { auth } from "../firebaseConfig";
 import {
   collection,
   getDocs,
+  doc,
   query,
   where,
   onSnapshot,
@@ -37,14 +38,10 @@ const HomeScreen = ({ navigation }) => {
   const [isComplete, setIsComplete] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
-  const auth = getAuth();
   const currentUser = auth.currentUser;
-  const tasksRef = collection(db, "tasks");
-  const q = query(
-    tasksRef,
-    where("userId", "==", currentUser.uid),
-    orderBy("createdAt")
-  );
+  const userRef = doc(db, "users", currentUser.uid);
+  const tasksRef = collection(userRef, "tasks");
+  const q = query(tasksRef, orderBy("createdAt"));
 
   // const onRefresh = useCallback(() => {
   //   setRefreshing(true);
@@ -53,14 +50,20 @@ const HomeScreen = ({ navigation }) => {
   // }, []);
 
   useEffect(() => {
-    onSnapshot(q, (snapshot) => {
+    const unsubDocs = onSnapshot(q, (snapshot) => {
       setTasks(
         snapshot.docs.map((doc) => {
           return { ...doc.data(), taskId: doc.id };
         })
       );
     });
+
+    // unsubDocs();
   }, []);
+
+  // {
+  //   !currentUser && unsubDocs();
+  // }
 
   const updateIsComplete = (id) => {
     setTasks(
@@ -78,8 +81,8 @@ const HomeScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       {/* <Button title="Get Current User" onPress={getCurrentUser} /> */}
-      <View style={styles.tasksData}>
-        <AddTask isComplete={isComplete} />
+      <AddTask isComplete={isComplete} />
+      <View style={styles.tasksList}>
         {/* <TasksList navigation={navigation} /> */}
         <FlatList
           data={tasks}
@@ -103,7 +106,6 @@ const HomeScreen = ({ navigation }) => {
           // refreshControl={
           //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           // }
-          style={styles.tasksList}
         />
         {tasks && tasks.every((task) => task.completed === true) && (
           <Text style={{ marginBottom: 505, textAlign: "center" }}>
@@ -118,12 +120,12 @@ const HomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     paddingTop: 30,
-    height: "100%",
+    flex: 1,
     backgroundColor: "#fff",
   },
-  tasksData: {
+  tasksList: {
     padding: 5,
-    height: "90%",
+    height: "85%",
   },
 });
 

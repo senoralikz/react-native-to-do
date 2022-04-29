@@ -13,8 +13,8 @@ import {
 import { TasksContext } from "../Helper/Context";
 import DueDate from "../components/DueDate";
 import Reminder from "../components/Reminder";
-import { doc, updateDoc } from "firebase/firestore";
-import { db } from "../firebaseConfig";
+import { doc, updateDoc, collection } from "firebase/firestore";
+import { db, auth } from "../firebaseConfig";
 
 const EditTaskScreen = ({ navigation: { goBack }, route }) => {
   const { tasks, setTasks } = useContext(TasksContext);
@@ -24,6 +24,10 @@ const EditTaskScreen = ({ navigation: { goBack }, route }) => {
   const [updateDateToggle, setUpdateDateToggle] = useState(() =>
     route.params.dueDate !== new Date(0).toLocaleDateString() ? true : false
   );
+
+  const currentUser = auth.currentUser;
+  const userRef = doc(db, "users", currentUser.uid);
+  const tasksRef = collection(userRef, "tasks");
 
   const onUpdateDateChange = (event, selectedDate) => {
     const currentDate = selectedDate;
@@ -53,7 +57,7 @@ const EditTaskScreen = ({ navigation: { goBack }, route }) => {
       //         }
       try {
         //
-        await updateDoc(doc(db, "tasks", route.params.taskId), {
+        await updateDoc(doc(tasksRef, route.params.taskId), {
           task: text,
           reminder: isEnabled,
           dueDate: newDueDate,
@@ -62,6 +66,9 @@ const EditTaskScreen = ({ navigation: { goBack }, route }) => {
           .then(goBack());
       } catch (error) {
         console.error("could not update", error);
+        Alert.alert("Oops!", error, {
+          text: "Ok",
+        });
       }
     } else {
       Alert.alert("Oops!", "You can't leave the task field empty", {

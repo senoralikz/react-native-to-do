@@ -15,10 +15,15 @@ import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
 import DueDate from "./DueDate";
 import Reminder from "./Reminder";
-import { getAuth } from "firebase/auth";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { auth } from "../firebaseConfig";
+import {
+  collection,
+  addDoc,
+  doc,
+  setDoc,
+  serverTimestamp,
+} from "firebase/firestore";
 import { db } from "../firebaseConfig";
-import { getTasks } from "../Helper/firebaseApiFns";
 import { AntDesign } from "@expo/vector-icons";
 
 const AddTask = ({ isComplete }) => {
@@ -28,9 +33,9 @@ const AddTask = ({ isComplete }) => {
   const [showDueDate, setShowDueDate] = useState(false);
   const [date, setDate] = useState(new Date());
 
-  const auth = getAuth();
   const currentUser = auth.currentUser;
-  const tasksRef = collection(db, "tasks");
+  const userRef = doc(db, "users", currentUser.uid);
+  const tasksRef = collection(userRef, "tasks");
 
   let dueDate = new Date(0).toLocaleDateString();
 
@@ -46,7 +51,7 @@ const AddTask = ({ isComplete }) => {
           dueDate: dueDate,
           reminder: isReminderEnabled,
           completed: isComplete,
-          userId: currentUser.uid,
+          ownerId: currentUser.uid,
           createdAt: serverTimestamp(),
         });
       } catch (error) {

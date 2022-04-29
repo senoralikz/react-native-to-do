@@ -1,23 +1,33 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Alert } from "react-native";
 import { useContext } from "react";
 import { UserContext } from "../Helper/Context";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { Drawer } from "react-native-paper";
-import { getAuth } from "firebase/auth";
-// import { auth } from "../firebaseConfig";
+import { auth } from "../firebaseConfig";
 
 const DrawerContents = (props, { navigation }) => {
   const { user, setUser } = useContext(UserContext);
 
-  const auth = getAuth();
   const currentUser = auth.currentUser;
 
   const handleSignOut = () => {
     auth
       .signOut()
-      .then(() => console.log("current user signed out:", currentUser.email));
-    navigation.closeDrawer();
-    setUser("");
+      .then(() => console.log("current user signed out:", currentUser.email))
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // console.log(
+        //   "Error Code:",
+        //   errorCode,
+        //   "------",
+        //   "Error Message:",
+        //   errorMessage
+        // );
+        Alert.alert(errorCode, errorMessage, { text: "Ok" });
+      });
+    // navigation.closeDrawer();
+    // setUser("");
   };
 
   return (
