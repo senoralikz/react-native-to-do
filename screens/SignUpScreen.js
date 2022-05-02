@@ -9,23 +9,84 @@ import {
 } from "react-native";
 import { useState } from "react";
 import { db, auth } from "../firebaseConfig";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { setDoc, doc, addDoc, collection } from "firebase/firestore";
+import { storage } from "../firebaseConfig";
+import { ref, getDownloadURL } from "firebase/storage";
 
 const SignUpScreen = ({ navigation: { goBack } }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [profilePic, setProfilePic] = useState(null);
+
+  const defaultImageRef = ref(
+    storage,
+    "defaultProfilePic/user-profile-default-image.png"
+  );
+
+  const defaultPhoto = async () => {
+    await getDownloadURL(defaultImageRef)
+      .then((url) => {
+        // `url` is the download URL for 'images/stars.jpg'
+        setProfilePic(url);
+        console.log("default photo url", url);
+
+        // This can be downloaded directly:
+        // const xhr = new XMLHttpRequest();
+        // xhr.responseType = "blob";
+        // xhr.onload = (event) => {
+        //   const blob = xhr.response;
+        // };
+        // xhr.open("GET", url);
+        // xhr.send();
+
+        // Or inserted into an <img> element
+        // const img = document.getElementById("myimg");
+        // img.setAttribute("src", url);
+      })
+      .catch((error) => {
+        // Handle any errors
+        Alert.alert(error.code, error.message, { text: "Ok" });
+      });
+  };
 
   const handleSignUp = async () => {
     if (!email || !password) {
-      alert("Please enter an email and password");
+      Alert.alert("Missing Info", "Please enter an email and password", {
+        text: "Ok",
+      });
     } else {
       await createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           // Signed in
           const user = userCredential.user;
-          console.log("signed up:", user);
+          if (!user.photoURL) {
+            console.log(user.email, "has no default photo");
+            getDownloadURL(defaultImageRef)
+              .then((url) => {
+                console.log("got default pic url", url);
+                updateProfile(user, {
+                  photoURL: url,
+                }).then(() => {
+                  console.log("photoURL for user:", user.photoURL);
+                });
+              })
+              .then(() => {
+                updateProfile(user, {
+                  photoURL: profilePic,
+                }).then(() => {
+                  console.log("photoURL for user:", user.photoURL);
+                });
+              });
+          }
+          Alert.alert("Welcome", "Thank you for signing up!", { text: "Ok" });
         })
+        // .then((user) => {
+        //   updateProfile(user, {
+        //     photoURL: profilePic,
+        //   });
+        //   console.log("updated with default photo:", user.photoURL);
+        // })
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;

@@ -40,6 +40,9 @@ const EditTaskScreen = ({ navigation: { goBack }, route }) => {
 
   const updateDueDateToggle = () => {
     setUpdateDateToggle((previousState) => !previousState);
+    {
+      updateDateToggle && setUpdateDate(new Date());
+    }
   };
 
   const updateTask = async () => {
@@ -50,11 +53,6 @@ const EditTaskScreen = ({ navigation: { goBack }, route }) => {
       } else {
         newDueDate = new Date(0).toLocaleDateString();
       }
-      // {
-      //           updateDateToggle
-      //             ? (dueDate = updateDate.toLocaleDateString())
-      //             : (dueDate = new Date(0).toLocaleDateString())
-      //         }
       try {
         //
         await updateDoc(doc(tasksRef, route.params.taskId), {

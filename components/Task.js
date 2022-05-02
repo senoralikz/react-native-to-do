@@ -99,7 +99,7 @@ const Task = ({ task, navigation }) => {
     >
       <View style={styles.container}>
         <View style={styles.taskInfo}>
-          <Text>{task.task}</Text>
+          <Text style={{ fontSize: 18 }}>{task.task}</Text>
           {task.reminder && (
             <Ionicons name="notifications" size={18} color="gold" />
           )}
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderStyle: "solid",
     borderRadius: 20,
-    marginVertical: 4,
+    marginBottom: 5,
     backgroundColor: "#fff",
     justifyContent: "space-between",
     flexDirection: "row",
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     height: 75,
     // width: 75,
-    marginVertical: 4,
+    marginBottom: 5,
     marginHorizontal: 5,
     // justifyContent: "center",
     // alignItems: "flex-start",

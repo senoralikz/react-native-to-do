@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Alert } from "react-native";
+import { StyleSheet, Text, View, Alert, Image } from "react-native";
 import { useContext } from "react";
 import { UserContext } from "../Helper/Context";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
@@ -33,7 +33,16 @@ const DrawerContents = (props, { navigation }) => {
   return (
     <View style={styles.container}>
       <DrawerContentScrollView {...props}>
-        <Text style={{ paddingHorizontal: 15 }}>{user.email}</Text>
+        <View style={styles.profileInfo}>
+          <Image source={{ uri: user.photoURL }} style={styles.profilePic} />
+          {currentUser.displayName ? (
+            <Text style={styles.displayNameEmail}>
+              {currentUser.displayName}
+            </Text>
+          ) : (
+            <Text style={styles.displayNameEmail}>{currentUser.email}</Text>
+          )}
+        </View>
         <View>
           {/* <Text>DrawerContents</Text> */}
           <DrawerItem
@@ -46,6 +55,12 @@ const DrawerContents = (props, { navigation }) => {
             label="Completed Tasks"
             onPress={() => {
               props.navigation.navigate("TasksCompleted");
+            }}
+          />
+          <DrawerItem
+            label="Profile"
+            onPress={() => {
+              props.navigation.navigate("Profile");
             }}
           />
         </View>
@@ -63,6 +78,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     marginTop: 15,
+  },
+  profileInfo: {
+    paddingHorizontal: 10,
+  },
+  displayNameEmail: {
+    justifyContent: "center",
+  },
+  profilePic: {
+    height: 75,
+    width: 75,
+    borderRadius: 50,
   },
   bottomDrawerSection: {
     marginBottom: 25,

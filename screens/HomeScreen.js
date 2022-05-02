@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   tasksList: {
-    padding: 5,
+    paddingHorizontal: 5,
     height: "85%",
   },
 });

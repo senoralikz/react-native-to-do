@@ -81,7 +81,7 @@ const AddTask = ({ isComplete }) => {
   };
 
   return (
-    <View>
+    <View style={styles.container}>
       <View style={styles.taskInput}>
         <TextInput
           style={{ paddingLeft: 5, width: "90%" }}
@@ -110,6 +110,9 @@ const AddTask = ({ isComplete }) => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    marginHorizontal: 8,
+  },
   taskInput: {
     padding: 5,
     borderWidth: 1,
@@ -120,7 +123,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   taskOptions: {
-    flexDirection: "row",
+    // flexDirection: "row",
     justifyContent: "space-between",
   },
 });
