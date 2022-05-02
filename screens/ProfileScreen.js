@@ -7,18 +7,14 @@ import {
   TextInput,
   Alert,
   Image,
+  KeyboardAvoidingView,
 } from "react-native";
 import { useState, useEffect } from "react";
 import { updateProfile } from "firebase/auth";
 import { auth } from "../firebaseConfig";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { storage } from "../firebaseConfig";
-import {
-  ref,
-  getDownloadURL,
-  uploadBytes,
-  uploadString,
-} from "firebase/storage";
+import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
 import * as ImagePicker from "expo-image-picker";
 import { v4 } from "uuid";
 
@@ -26,26 +22,26 @@ const ProfileScreen = ({ navigation }) => {
   const user = auth.currentUser;
 
   const [userDisplayName, setUserDisplayName] = useState(user.displayName);
-  const [userProfilePic, setUserProfilePic] = useState(user.photoURL);
+  // const [userProfilePic, setUserProfilePic] = useState(user.photoURL);
   const [userEmail, setUserEmail] = useState(user.email);
   const [userEmailVerified, setUserEmailVerified] = useState(user.displayName);
   const [profileEditable, setProfileEditable] = useState(false);
-  const [imagePicked, setImagePicked] = useState(null);
+  const [imagePicked, setImagePicked] = useState(user.photoURL);
 
-  useEffect(() => {
-    (async () => {
-      if (Platform.OS !== "web") {
-        const { status } =
-          await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (status !== "granted") {
-          Alert.alert(
-            "Sorry, we need camera roll permissions to make this work!"
-          );
-          return;
-        }
-      }
-    })();
-  }, []);
+  // useEffect(() => {
+  //   (async () => {
+  //     if (Platform.OS !== "web") {
+  //       const { status } =
+  //         await ImagePicker.requestMediaLibraryPermissionsAsync();
+  //       if (status !== "granted") {
+  //         Alert.alert(
+  //           "Sorry, we need camera roll permissions to make this work!"
+  //         );
+  //         return;
+  //       }
+  //     }
+  //   })();
+  // }, []);
 
   // const user = auth.currentUser;
 
@@ -65,29 +61,35 @@ const ProfileScreen = ({ navigation }) => {
       });
 
       if (!result.cancelled) {
+        console.log("result was not canceled");
         const fileName = result.uri.replace(/^.*[\\\/]/, "");
-        const imageRef = ref(
-          storage,
-          `users/${user.uid}/images/${fileName + v4()}`
-        );
+        const imageRef = ref(storage, `users/${user.uid}/images/${fileName}`);
 
-        // firebase storage only accepts array of bytes for image/file so we need to first fetch from result.uri
-        //  and then convert to bytes using .blob() function from firebase
+        // firebase storage only accepts array of bytes for image/file so we need to first fetch from
+        // result.uri and then convert to bytes using .blob() function from firebase
         const img = await fetch(result.uri);
         const bytes = await img.blob();
         await uploadBytes(imageRef, bytes)
           .then(() => {
+            console.log("successfully uploaded picture");
+            Alert.alert("Success", "Picture successfully uploaded", {
+              test: "Ok",
+            });
             getDownloadURL(imageRef)
               .then((url) => {
-                updateProfile(user, {
-                  photoURL: url,
-                }).then(() => {
-                  Alert.alert("Success", "Succesfully updated profile pic", {
-                    text: "Ok",
-                  });
-                  console.log("updated profile pic user:", user);
-                });
+                console.log(url);
+                setImagePicked(url);
               })
+              // .then(() => {
+              //   updateProfile(user, {
+              //     photoURL: imagePicked,
+              //   });
+              //   Alert.alert("Success", "Succesfully updated profile pic", {
+              //     text: "Ok",
+              //   });
+              //   console.log("updated profile pic user:", user);
+              //   console.log("reading url on line 90:", url);
+              // })
               .catch((error) => {
                 console.error(error.code, "--- line 94 ----", error.message);
                 Alert.alert(error.code, error.message, {
@@ -132,6 +134,7 @@ const ProfileScreen = ({ navigation }) => {
       updateProfile(user, {
         displayName: userDisplayName,
         email: userEmail,
+        photoURL: imagePicked,
       })
         .then(() => {
           // Profile updated!
@@ -146,17 +149,16 @@ const ProfileScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      {userProfilePic ? (
-        <View>
-          <Image source={{ uri: userProfilePic }} style={styles.profilePic} />
-          <View style={styles.textView}>
-            <Text style={styles.imageText}>Edit</Text>
-          </View>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
+      <View>
+        <Image source={{ uri: imagePicked }} style={styles.profilePic} />
+        <View style={styles.textView}>
+          {/* <Text style={styles.imageText}>Edit</Text> */}
         </View>
-      ) : (
-        <Text>No profile pic for user</Text>
-      )}
+      </View>
       <Button title="Change Profile Pic" onPress={selectProfilePic} />
       <View style={styles.editProfileButton}>
         <Pressable onPress={handleEditProfile}>
@@ -195,7 +197,7 @@ const ProfileScreen = ({ navigation }) => {
       </View>
       <Button title="Update Profile" onPress={handleProfileUpdate} />
       {/* <TextInput />Email Verified: {user.emailVerified} */}
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 

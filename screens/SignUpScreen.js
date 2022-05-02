@@ -104,7 +104,10 @@ const SignUpScreen = ({ navigation: { goBack } }) => {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
       <Text>SignUpScreen</Text>
       <TextInput
         placeholder="Email"

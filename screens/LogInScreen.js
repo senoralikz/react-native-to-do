@@ -65,7 +65,10 @@ const LogInScreen = ({ navigation }) => {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
       <Text>Log In Screen</Text>
       <TextInput
         placeholder="Email"
