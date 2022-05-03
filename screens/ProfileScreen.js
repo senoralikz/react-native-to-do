@@ -80,16 +80,15 @@ const ProfileScreen = ({ navigation }) => {
                 console.log(url);
                 setImagePicked(url);
               })
-              // .then(() => {
-              //   updateProfile(user, {
-              //     photoURL: imagePicked,
-              //   });
-              //   Alert.alert("Success", "Succesfully updated profile pic", {
-              //     text: "Ok",
-              //   });
-              //   console.log("updated profile pic user:", user);
-              //   console.log("reading url on line 90:", url);
-              // })
+              .then(() => {
+                updateProfile(user, {
+                  photoURL: imagePicked,
+                });
+                Alert.alert("Success", "Succesfully updated profile pic", {
+                  text: "Ok",
+                });
+                console.log("updated profile pic user:", user);
+              })
               .catch((error) => {
                 console.error(error.code, "--- line 94 ----", error.message);
                 Alert.alert(error.code, error.message, {
@@ -134,11 +133,10 @@ const ProfileScreen = ({ navigation }) => {
       updateProfile(user, {
         displayName: userDisplayName,
         email: userEmail,
-        photoURL: imagePicked,
       })
         .then(() => {
           // Profile updated!
-          setProfileEditable((prevState) => !prevState);
+          setProfileEditable(false);
           Alert.alert("Success!", "Profile Changes Saved", { text: "Ok" });
         })
         .catch((error) => {
@@ -153,13 +151,11 @@ const ProfileScreen = ({ navigation }) => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
-      <View>
+      <View style={{ alignItems: "center" }}>
         <Image source={{ uri: imagePicked }} style={styles.profilePic} />
-        <View style={styles.textView}>
-          {/* <Text style={styles.imageText}>Edit</Text> */}
-        </View>
+        <Button title="Change Profile Pic" onPress={selectProfilePic} />
       </View>
-      <Button title="Change Profile Pic" onPress={selectProfilePic} />
+
       <View style={styles.editProfileButton}>
         <Pressable onPress={handleEditProfile}>
           <FontAwesome5 name="user-edit" size={24} color="black" />
@@ -207,8 +203,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    justifyContent: "center",
-    paddingHorizontal: 20,
+    padding: 20,
   },
   profilePic: {
     height: 100,

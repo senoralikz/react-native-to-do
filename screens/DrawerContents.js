@@ -6,14 +6,14 @@ import { Drawer } from "react-native-paper";
 import { auth } from "../firebaseConfig";
 
 const DrawerContents = (props, { navigation }) => {
-  const { user, setUser } = useContext(UserContext);
+  // const { user, setUser } = useContext(UserContext);
 
-  const currentUser = auth.currentUser;
+  const user = auth.currentUser;
 
   const handleSignOut = () => {
     auth
       .signOut()
-      .then(() => console.log("current user signed out:", currentUser.email))
+      // .then(() => navigation.closeDrawer())
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
@@ -26,7 +26,7 @@ const DrawerContents = (props, { navigation }) => {
         // );
         Alert.alert(errorCode, errorMessage, { text: "Ok" });
       });
-    // navigation.closeDrawer();
+
     // setUser("");
   };
 
@@ -35,12 +35,10 @@ const DrawerContents = (props, { navigation }) => {
       <DrawerContentScrollView {...props}>
         <View style={styles.profileInfo}>
           <Image source={{ uri: user.photoURL }} style={styles.profilePic} />
-          {currentUser.displayName ? (
-            <Text style={styles.displayNameEmail}>
-              {currentUser.displayName}
-            </Text>
+          {user.displayName ? (
+            <Text style={styles.displayNameEmail}>{user.displayName}</Text>
           ) : (
-            <Text style={styles.displayNameEmail}>{currentUser.email}</Text>
+            <Text style={styles.displayNameEmail}>{user.email}</Text>
           )}
         </View>
         <View>
