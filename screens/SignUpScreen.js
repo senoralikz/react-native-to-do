@@ -15,6 +15,7 @@ import { auth, storage } from "../firebaseConfig";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
 import * as ImagePicker from "expo-image-picker";
+import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
 
 const SignUpScreen = ({ navigation: { goBack } }) => {
   const [email, setEmail] = useState("");
@@ -103,17 +104,20 @@ const SignUpScreen = ({ navigation: { goBack } }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ alignItems: "center" }}>
-        <Text style={{ fontSize: 24, fontWeight: "bold" }}>Sign Up Screen</Text>
+        <Text style={{ fontSize: 24, fontWeight: "bold" }}>Sign Up</Text>
       </View>
-
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+        style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "space-evenly",
+        }}
       >
         <Pressable onPress={selectProfilePic}>
           {!profilePicUri ? (
             <View style={styles.noProfilePicSelected}>
-              <Text style={{ textAlign: "center", paddingVertical: 40 }}>
+              <Text style={{ textAlign: "center", paddingVertical: 55 }}>
                 Add Photo
               </Text>
             </View>
@@ -124,27 +128,55 @@ const SignUpScreen = ({ navigation: { goBack } }) => {
             />
           )}
         </Pressable>
-        <TextInput
-          placeholder="Email"
-          value={email}
-          onChangeText={(text) => setEmail(text)}
-          style={styles.emailPWInput}
-        />
-        <TextInput
-          placeholder="User Name"
-          value={displayName}
-          onChangeText={(text) => setDisplayName(text)}
-          style={styles.emailPWInput}
-        />
-        <TextInput
-          placeholder="Password"
-          value={password}
-          onChangeText={(text) => setPassword(text)}
-          style={styles.emailPWInput}
-          secureTextEntry
-        />
-        <Button title="Sign up" onPress={handleSignUp} />
-        <Button title="Back to Log In" onPress={() => goBack()} />
+        <View>
+          <View style={styles.emailPWInput}>
+            <MaterialCommunityIcons
+              name="email"
+              size={24}
+              color="lightgrey"
+              style={{ marginRight: 5 }}
+            />
+            <TextInput
+              placeholder="Email"
+              value={email}
+              onChangeText={(text) => setEmail(text)}
+              style={{ width: "100%" }}
+            />
+          </View>
+          <View style={styles.emailPWInput}>
+            <AntDesign
+              name="user"
+              size={24}
+              color="lightgrey"
+              style={{ marginRight: 5 }}
+            />
+            <TextInput
+              placeholder="Display Name"
+              value={displayName}
+              onChangeText={(text) => setDisplayName(text)}
+              style={{ width: "100%" }}
+            />
+          </View>
+          <View style={styles.emailPWInput}>
+            <MaterialCommunityIcons
+              name="onepassword"
+              size={24}
+              color="lightgrey"
+              style={{ marginRight: 5 }}
+            />
+            <TextInput
+              placeholder="Password"
+              value={password}
+              onChangeText={(text) => setPassword(text)}
+              style={{ width: "100%" }}
+              secureTextEntry
+            />
+          </View>
+          <View>
+            <Button title="Sign up" onPress={handleSignUp} />
+            <Button title="Back to Log In" onPress={() => goBack()} />
+          </View>
+        </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -160,20 +192,22 @@ const styles = StyleSheet.create({
   emailPWInput: {
     width: "80%",
     borderBottomWidth: 1,
-    padding: 5,
+    flexDirection: "row",
     marginVertical: 5,
+    padding: 5,
   },
   noProfilePicSelected: {
-    borderRadius: 50,
+    borderRadius: 75,
     borderStyle: "dashed",
     borderWidth: 1,
-    height: 100,
-    width: 100,
+    height: 125,
+    width: 125,
     backgroundColor: "#dfe6e9",
+    opacity: 0.6,
   },
   profilePicSelected: {
-    borderRadius: 50,
-    height: 100,
-    width: 100,
+    borderRadius: 75,
+    height: 125,
+    width: 125,
   },
 });

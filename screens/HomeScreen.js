@@ -27,27 +27,15 @@ import {
 } from "firebase/firestore";
 import { useEffect } from "react";
 import { db } from "../firebaseConfig";
-import { getTasks } from "../Helper/firebaseApiFns";
-
-const wait = (timeout) => {
-  return new Promise((resolve) => setTimeout(resolve, timeout));
-};
 
 const HomeScreen = ({ navigation }) => {
   const { tasks, setTasks } = useContext(TasksContext);
   const [isComplete, setIsComplete] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
 
-  const currentUser = auth.currentUser;
-  const userRef = doc(db, "users", currentUser.uid);
+  const user = auth.currentUser;
+  const userRef = doc(db, "users", user.uid);
   const tasksRef = collection(userRef, "tasks");
   const q = query(tasksRef, orderBy("createdAt"));
-
-  // const onRefresh = useCallback(() => {
-  //   setRefreshing(true);
-  //   getTasks();
-  //   wait(2000).then(() => setRefreshing(false));
-  // }, []);
 
   useEffect(() => {
     const unsubDocs = onSnapshot(q, (snapshot) => {
@@ -58,12 +46,8 @@ const HomeScreen = ({ navigation }) => {
       );
     });
 
-    // unsubDocs();
+    return unsubDocs;
   }, []);
-
-  // {
-  //   !currentUser && unsubDocs();
-  // }
 
   const updateIsComplete = (id) => {
     setTasks(
@@ -80,7 +64,6 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      {/* <Button title="Get Current User" onPress={getCurrentUser} /> */}
       <AddTask isComplete={isComplete} />
       <View style={styles.tasksList}>
         {/* <TasksList navigation={navigation} /> */}
@@ -96,16 +79,6 @@ const HomeScreen = ({ navigation }) => {
             )
           }
           keyExtractor={(item) => item.taskId}
-          // ListEmptyComponent={
-          //   tasks.every((task) => task.completed === true) && (
-          //     <Text style={{ marginBottom: 505, textAlign: "center" }}>
-          //       Nothing to do
-          //     </Text>
-          //   )
-          // }
-          // refreshControl={
-          //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          // }
         />
         {tasks && tasks.every((task) => task.completed === true) && (
           <Text style={{ marginBottom: 505, textAlign: "center" }}>
